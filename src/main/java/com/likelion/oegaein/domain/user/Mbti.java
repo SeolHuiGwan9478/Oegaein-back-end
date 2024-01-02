@@ -1,0 +1,20 @@
+package com.likelion.oegaein.domain.user;
+
+public enum Mbti {
+    ESFJ,
+    ESFP,
+    ESTJ,
+    ESTP,
+    ENFJ,
+    ENFP,
+    ENTJ,
+    ENTP,
+    ISFJ,
+    ISFP,
+    ISTJ,
+    ISTP,
+    INFJ,
+    INFP,
+    INTJ,
+    INTP,
+}
