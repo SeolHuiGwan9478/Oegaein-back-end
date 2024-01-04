@@ -1,4 +1,4 @@
-package com.likelion.oegaein.repository;
+package com.likelion.oegaein.repository.member;
 
 import com.likelion.oegaein.domain.member.Member;
 import jakarta.persistence.EntityManager;
