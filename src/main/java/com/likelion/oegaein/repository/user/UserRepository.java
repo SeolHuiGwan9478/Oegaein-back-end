@@ -1,6 +1,6 @@
-package com.likelion.oegaein.repository;
+package com.likelion.oegaein.repository.user;
 
-import com.likelion.oegaein.domain.User;
+import com.likelion.oegaein.domain.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;

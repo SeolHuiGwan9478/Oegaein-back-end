@@ -1,10 +1,9 @@
-package com.likelion.oegaein.domain;
+package com.likelion.oegaein.domain.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +14,5 @@ public class User {
     private Long id;
     private String email;
     private String password;
-    @CreationTimestamp
     private LocalDateTime createdAt;
 }
