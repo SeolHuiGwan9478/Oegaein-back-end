@@ -1,6 +1,5 @@
 package com.likelion.oegaein.domain.matching;
 
-import com.likelion.oegaein.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
