@@ -24,7 +24,7 @@ public class MatchingPost {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    private MatchingStatus matchingStatus; // test, WAITING, COMPLETED
+    private MatchingStatus matchingStatus; // 매칭 상태, WAITING, COMPLETED
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
