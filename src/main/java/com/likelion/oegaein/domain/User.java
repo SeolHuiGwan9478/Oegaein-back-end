@@ -1,4 +1,4 @@
-package com.likelion.oegaein.domain.user;
+package com.likelion.oegaein.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
