@@ -1,5 +1,6 @@
 package com.likelion.oegaein.domain.matching;
 
+import com.likelion.oegaein.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,5 +28,5 @@ public class MatchingPost {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User author;
+    private Member author;
 }
