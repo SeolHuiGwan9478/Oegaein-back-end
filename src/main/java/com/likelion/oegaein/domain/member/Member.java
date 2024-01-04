@@ -1,4 +1,4 @@
-package com.likelion.oegaein.domain.user;
+package com.likelion.oegaein.domain.member;
 
 import com.likelion.oegaein.domain.global.BaseTime;
 import jakarta.persistence.Column;
@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Transactional
-public class User extends BaseTime {
+public class Member extends BaseTime {
     @Id @GeneratedValue
-    @Column(name = "user_id")
+    @Column(name = "member_id")
     private Long id;
     @Column(unique = true)
     private String email;

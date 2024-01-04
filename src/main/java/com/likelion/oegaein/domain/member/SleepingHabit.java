@@ -1,6 +1,6 @@
-package com.likelion.oegaein.domain.user;
+package com.likelion.oegaein.domain.member;
 
-public enum SleepingHabbit {
+public enum SleepingHabit {
     SNORER, // 코골이
     BRUXISM, // 이갈이
     TALKER, // 잠꼬대

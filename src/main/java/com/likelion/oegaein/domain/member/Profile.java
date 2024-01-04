@@ -1,4 +1,4 @@
-package com.likelion.oegaein.domain.user;
+package com.likelion.oegaein.domain.member;
 
 import jakarta.persistence.*;
 
@@ -16,7 +16,7 @@ public class Profile {
     private LocalDate birthdate;
     private Mbti mbti;
     private Smoking smoking;
-    private SleepingHabbit sleepingHabbit;
+    private SleepingHabit sleepingHabit;
 //    private LocalDate sleepTime;
     private LifePattern lifePattern;
     private Outing outing;
@@ -24,6 +24,6 @@ public class Profile {
     private Sensitivity soundSensitivity;
     private String introduce;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 }
