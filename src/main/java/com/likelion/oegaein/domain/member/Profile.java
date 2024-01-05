@@ -14,6 +14,7 @@ public class Profile {
     private String studentNo;
     private String major;
     private LocalDate birthdate;
+    private Dormitory dormitory;
     private Mbti mbti;
     private Smoking smoking;
     private SleepingHabit sleepingHabit;
