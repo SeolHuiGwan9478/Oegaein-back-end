@@ -26,7 +26,7 @@ public class MatchingPost {
     @Enumerated(EnumType.STRING)
     private MatchingStatus matchingStatus; // 매칭 상태, WAITING, COMPLETED
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member author;
 }
