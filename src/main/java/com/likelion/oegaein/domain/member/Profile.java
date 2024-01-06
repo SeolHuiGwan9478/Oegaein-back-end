@@ -1,5 +1,6 @@
 package com.likelion.oegaein.domain.member;
 
+import com.likelion.oegaein.domain.global.Gender;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
