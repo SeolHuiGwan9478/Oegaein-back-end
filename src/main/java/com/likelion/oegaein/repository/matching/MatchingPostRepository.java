@@ -3,19 +3,26 @@ package com.likelion.oegaein.repository.matching;
 import com.likelion.oegaein.domain.matching.MatchingPost;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class MatchingPostRepository {
-    @PersistenceContext
-    private EntityManager em;
+import java.util.List;
 
-    public Long save(MatchingPost post){
+@Repository
+@RequiredArgsConstructor
+public class MatchingPostRepository {
+    private final EntityManager em;
+
+    public void save(MatchingPost post){
         em.persist(post);
-        return post.getId();
     }
 
-    public MatchingPost find(Long id){
+    public MatchingPost findById(Long id){
         return em.find(MatchingPost.class, id);
+    }
+
+    public List<MatchingPost> findAll(){
+        return em.createQuery("select mp from MatchingPost mp", MatchingPost.class)
+                .getResultList();
     }
 }
