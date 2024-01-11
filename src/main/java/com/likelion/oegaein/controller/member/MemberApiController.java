@@ -1,4 +1,4 @@
-package com.likelion.oegaein.api.member;
+package com.likelion.oegaein.controller.member;
 
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.service.member.MemberService;
