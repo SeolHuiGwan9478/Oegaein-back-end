@@ -16,17 +16,18 @@ public class MatchingService {
 
     // 매칭글 작성
     @Transactional
-    public Long post(MatchingPost matchingPost){
+    public Long saveMatchingPost(MatchingPost matchingPost){
         matchingPostRepository.save(matchingPost);
         return matchingPost.getId();
     }
 
     // 모든 매칭글 조회
-    public List<MatchingPost> findMatchingPosts(){
+    public List<MatchingPost> findAllMatchingPosts(){
         return matchingPostRepository.findAll();
     }
+
     // 특정 매칭글 조회(ID)
-    public MatchingPost findById(Long matchingPostId){
+    public MatchingPost findByIdMatchingPost(Long matchingPostId){
         return matchingPostRepository.findById(matchingPostId);
     }
 }

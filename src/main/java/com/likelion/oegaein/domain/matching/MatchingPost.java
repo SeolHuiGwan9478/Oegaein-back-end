@@ -2,6 +2,7 @@ package com.likelion.oegaein.domain.matching;
 
 import com.likelion.oegaein.domain.member.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,12 +11,20 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 public class MatchingPost {
     @Id @GeneratedValue
     @Column(name = "matching_post_id")
     private Long id; // PK
 
+    private String title;
     private String content;
+
+    @Enumerated(EnumType.STRING)
+    private DongType dong; // 기숙사 동(* A,B,C,D,E)
+    @Enumerated(EnumType.STRING)
+    private RoomSizeType roomSize; // 기숙사 방 사이즈(* 2인실/4인실)
+
     private LocalDateTime deadline;
 
     @CreationTimestamp
@@ -29,7 +38,4 @@ public class MatchingPost {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member author;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private DormType dormType;
 }
