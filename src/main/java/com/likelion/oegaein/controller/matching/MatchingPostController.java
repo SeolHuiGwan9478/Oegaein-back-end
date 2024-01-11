@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class MatchingPostController {
     }
 
     @PostMapping("/api/v1/matchingposts") // 매칭 글 등록
-    public ResponseEntity<Long> createMatchingPost(@RequestBody CreateMatchingPostRequest dto){
+    public ResponseEntity<Long> postMatchingPost(@RequestBody CreateMatchingPostRequest dto){
         Member author = memberService.findOne(dto.getAuthorId());
         MatchingPost newMatchingPost = MatchingPost.builder()
                 .title(dto.getTitle())
@@ -42,5 +39,15 @@ public class MatchingPostController {
                 .build();
         Long newMatchingPostId = matchingService.saveMatchingPost(newMatchingPost);
         return new ResponseEntity<>(newMatchingPostId,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/api/v1/matchingposts/{matchingpostid}")
+    public ResponseEntity<MatchingPost> getMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
+        try{
+            MatchingPost matchingPost = matchingService.findByIdMatchingPost(matchingPostId);
+            return new ResponseEntity<>(matchingPost, HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
