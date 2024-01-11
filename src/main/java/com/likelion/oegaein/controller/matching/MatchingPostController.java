@@ -28,6 +28,7 @@ public class MatchingPostController {
 
     @PostMapping("/api/v1/matchingposts") // 매칭 글 등록
     public ResponseEntity<Long> postMatchingPost(@RequestBody CreateMatchingPostRequest dto){
+        log.info("Request to post matchingpost");
         Member author = memberService.findOne(dto.getAuthorId());
         MatchingPost newMatchingPost = MatchingPost.builder()
                 .title(dto.getTitle())
@@ -43,9 +44,21 @@ public class MatchingPostController {
 
     @GetMapping("/api/v1/matchingposts/{matchingpostid}")
     public ResponseEntity<MatchingPost> getMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
+        log.info("Request to get matchingpost by id-{}", matchingPostId);
         try{
             MatchingPost matchingPost = matchingService.findByIdMatchingPost(matchingPostId);
             return new ResponseEntity<>(matchingPost, HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/api/v1/matchingposts/{matchingpostid}")
+    public ResponseEntity<Long> deleteMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
+        log.info("Request to delete matchingpost by id-{}", matchingPostId);
+        try{
+            Long deletedMatchingPostId = matchingService.removeMatchingPost(matchingPostId);
+            return new ResponseEntity<>(deletedMatchingPostId, HttpStatus.NO_CONTENT);
         }catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

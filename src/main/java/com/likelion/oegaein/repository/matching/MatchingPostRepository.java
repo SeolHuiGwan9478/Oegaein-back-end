@@ -13,16 +13,21 @@ import java.util.List;
 public class MatchingPostRepository {
     private final EntityManager em;
 
-    public void save(MatchingPost post){
-        em.persist(post);
+    public void save(MatchingPost matchingPost){
+        em.persist(matchingPost);
     }
 
-    public MatchingPost findById(Long id){
-        return em.find(MatchingPost.class, id);
+    public MatchingPost findById(Long matchingPostId){
+        return em.find(MatchingPost.class, matchingPostId);
     }
 
     public List<MatchingPost> findAll(){
         return em.createQuery("select mp from MatchingPost mp", MatchingPost.class)
                 .getResultList();
+    }
+
+    public void delete(Long matchingPostId){
+        MatchingPost findMatchingPost = em.find(MatchingPost.class, matchingPostId);
+        em.remove(findMatchingPost);
     }
 }

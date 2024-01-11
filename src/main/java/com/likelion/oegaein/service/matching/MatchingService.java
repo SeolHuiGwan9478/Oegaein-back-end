@@ -30,4 +30,10 @@ public class MatchingService {
     public MatchingPost findByIdMatchingPost(Long matchingPostId){
         return matchingPostRepository.findById(matchingPostId);
     }
+
+    // 특정 매칭글 삭제
+    public Long removeMatchingPost(Long matchingPostId){
+        matchingPostRepository.delete(matchingPostId);
+        return matchingPostId;
+    }
 }
