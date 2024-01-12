@@ -3,6 +3,8 @@ package com.likelion.oegaein.controller.matching;
 import com.likelion.oegaein.domain.matching.MatchingPost;
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.dto.matching.CreateMatchingPostRequest;
+import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
+import com.likelion.oegaein.dto.matching.UpdateMatchingPostRequest;
 import com.likelion.oegaein.service.matching.MatchingService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,25 @@ public class MatchingPostController {
             MatchingPost matchingPost = matchingService.findByIdMatchingPost(matchingPostId);
             return new ResponseEntity<>(matchingPost, HttpStatus.OK);
         }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PatchMapping("/api/v1/matchingPosts/{matchingpostid}")
+    public ResponseEntity<Long> patchMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
+                                                  @RequestBody UpdateMatchingPostRequest dto){
+        try{
+            UpdateMatchingPostData changedDto = UpdateMatchingPostData.builder()
+                    .matchingPostId(matchingPostId)
+                    .title(dto.getTitle())
+                    .content(dto.getContent())
+                    .deadline(dto.getDeadline())
+                    .dongType(dto.getDongType())
+                    .roomSizeType(dto.getRoomSizeType())
+                    .build();
+            Long updatedMatchingPost = matchingService.updateMatchingPost(changedDto);
+            return new ResponseEntity<>(updatedMatchingPost, HttpStatus.OK);
+        }catch(IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

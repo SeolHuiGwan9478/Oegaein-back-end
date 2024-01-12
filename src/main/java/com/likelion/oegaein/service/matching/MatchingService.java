@@ -1,6 +1,7 @@
 package com.likelion.oegaein.service.matching;
 
 import com.likelion.oegaein.domain.matching.MatchingPost;
+import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,14 @@ public class MatchingService {
     // 특정 매칭글 조회(ID)
     public MatchingPost findByIdMatchingPost(Long matchingPostId){
         return matchingPostRepository.findById(matchingPostId);
+    }
+
+    // 매칭글 수정
+    @Transactional
+    public Long updateMatchingPost(UpdateMatchingPostData dto){
+        // 영속화
+        MatchingPost matchingPost = matchingPostRepository.findById(dto.getMatchingPostId());
+        matchingPost.matchingPostUpdate(dto);
+        return dto.getMatchingPostId();
     }
 }
