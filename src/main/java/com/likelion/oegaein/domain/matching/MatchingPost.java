@@ -1,6 +1,7 @@
 package com.likelion.oegaein.domain.matching;
 
 import com.likelion.oegaein.domain.member.Member;
+import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,4 +39,12 @@ public class MatchingPost {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member author;
+
+    public void matchingPostUpdate(UpdateMatchingPostData dto){
+        if(dto.getTitle() != null) this.title = dto.getTitle();
+        if(dto.getContent() != null) this.content = dto.getContent();
+        if(dto.getDeadline() != null) this.deadline = dto.getDeadline();
+        if(dto.getDongType() != null) this.dong = dto.getDongType();
+        if(dto.getRoomSizeType() != null) this.roomSize = dto.getRoomSizeType();
+    }
 }
