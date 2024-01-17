@@ -13,5 +13,4 @@ public class CreateMatchingPostRequest {
     private LocalDateTime deadline;
     private DongType dongType;
     private RoomSizeType roomSizeType;
-    private Long authorId; // 작성자 ID
 }

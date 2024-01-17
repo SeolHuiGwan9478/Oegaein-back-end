@@ -1,10 +1,7 @@
 package com.likelion.oegaein.controller.matching;
 
 import com.likelion.oegaein.domain.matching.MatchingPost;
-import com.likelion.oegaein.domain.member.Member;
-import com.likelion.oegaein.dto.matching.CreateMatchingPostRequest;
-import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
-import com.likelion.oegaein.dto.matching.UpdateMatchingPostRequest;
+import com.likelion.oegaein.dto.matching.*;
 import com.likelion.oegaein.service.matching.MatchingService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -23,33 +20,26 @@ public class MatchingPostController {
     private final MemberService memberService;
 
     @GetMapping("/api/v1/matchingposts") // 전체 매칭 글 조회
-    public List<MatchingPost> getMatchingPosts(){
+    public ResponseEntity<FindMatchingPostsResponse> getMatchingPosts(){
         log.info("Request to get matchingposts"); // logging
-        return matchingService.findAllMatchingPosts();
+        FindMatchingPostsResponse response = matchingService.findAllMatchingPosts();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/api/v1/matchingposts") // 매칭 글 등록
-    public ResponseEntity<Long> postMatchingPost(@RequestBody CreateMatchingPostRequest dto){
+    public ResponseEntity<CreateMatchingPostResponse> postMatchingPost(@RequestBody CreateMatchingPostRequest dto){
         log.info("Request to post matchingpost");
-        Member author = memberService.findOne(dto.getAuthorId());
-        MatchingPost newMatchingPost = MatchingPost.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .deadline(dto.getDeadline())
-                .dong(dto.getDongType())
-                .roomSize(dto.getRoomSizeType())
-                .author(author)
-                .build();
-        Long newMatchingPostId = matchingService.saveMatchingPost(newMatchingPost);
-        return new ResponseEntity<>(newMatchingPostId,HttpStatus.CREATED);
+        CreateMatchingPostData convertedDto = CreateMatchingPostData.toCreateMatchingPostData(dto);
+        CreateMatchingPostResponse response = matchingService.saveMatchingPost(convertedDto);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/v1/matchingposts/{matchingpostid}")
-    public ResponseEntity<MatchingPost> getMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
+    @GetMapping("/api/v1/matchingposts/{matchingpostid}") // 특정 매칭 글 조회
+    public ResponseEntity<FindMatchingPostResponse> getMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
         log.info("Request to get matchingpost by id-{}", matchingPostId);
         try{
-            MatchingPost matchingPost = matchingService.findByIdMatchingPost(matchingPostId);
-            return new ResponseEntity<>(matchingPost, HttpStatus.OK);
+            FindMatchingPostResponse response = matchingService.findByIdMatchingPost(matchingPostId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -59,14 +49,13 @@ public class MatchingPostController {
     public ResponseEntity<Long> deleteMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
         log.info("Request to delete matchingpost by id-{}", matchingPostId);
         try{
-            Long deletedMatchingPostId = matchingService.removeMatchingPost(matchingPostId);
-            return new ResponseEntity<>(deletedMatchingPostId, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PatchMapping("/api/v1/matchingPosts/{matchingpostid}")
+    @PutMapping("/api/v1/matchingPosts/{matchingpostid}")
     public ResponseEntity<Long> patchMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
                                                   @RequestBody UpdateMatchingPostRequest dto){
         try{
