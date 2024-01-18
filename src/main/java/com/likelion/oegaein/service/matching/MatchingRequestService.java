@@ -29,4 +29,11 @@ public class MatchingRequestService {
         matchingRequestRepository.save(newMatchingRequest);
         return new CreateMatchingReqResponse(newMatchingRequest.getId());
     }
+
+    @Transactional
+    public void removeMatchingRequest(Long matchingRequestId){
+        MatchingRequest matchingRequest = matchingRequestRepository.findById(matchingRequestId)
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingRequestId));
+        matchingRequestRepository.delete(matchingRequest);
+    }
 }
