@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class MatchingPostController {
-    private final MatchingPostService matchingService;
+    private final MatchingPostService matchingPostService;
     private final MemberService memberService;
 
     @GetMapping("/api/v1/matchingposts") // 전체 매칭 글 조회
     public ResponseEntity<FindMatchingPostsResponse> getMatchingPosts(){
         log.info("Request to get matchingposts"); // logging
-        FindMatchingPostsResponse response = matchingService.findAllMatchingPosts();
+        FindMatchingPostsResponse response = matchingPostService.findAllMatchingPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -27,7 +27,7 @@ public class MatchingPostController {
     public ResponseEntity<CreateMatchingPostResponse> postMatchingPost(@RequestBody CreateMatchingPostRequest dto){
         log.info("Request to post matchingpost");
         CreateMatchingPostData convertedDto = CreateMatchingPostData.toCreateMatchingPostData(dto);
-        CreateMatchingPostResponse response = matchingService.saveMatchingPost(convertedDto);
+        CreateMatchingPostResponse response = matchingPostService.saveMatchingPost(convertedDto);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
@@ -35,7 +35,7 @@ public class MatchingPostController {
     public ResponseEntity<FindMatchingPostResponse> getMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
         log.info("Request to get matchingpost by id-{}", matchingPostId);
         try{
-            FindMatchingPostResponse response = matchingService.findByIdMatchingPost(matchingPostId);
+            FindMatchingPostResponse response = matchingPostService.findByIdMatchingPost(matchingPostId);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,13 +46,14 @@ public class MatchingPostController {
     public ResponseEntity<Long> deleteMatchingPost(@PathVariable("matchingpostid") Long matchingPostId){
         log.info("Request to delete matchingpost by id-{}", matchingPostId);
         try{
+            matchingPostService.removeMatchingPost(matchingPostId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/api/v1/matchingPosts/{matchingpostid}")
+    @PutMapping("/api/v1/matchingposts/{matchingpostid}")
     public ResponseEntity<UpdateMatchingPostResponse> putMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
                                                   @RequestBody UpdateMatchingPostRequest dto){
         try{
@@ -63,7 +64,7 @@ public class MatchingPostController {
                     .dongType(dto.getDongType())
                     .roomSizeType(dto.getRoomSizeType())
                     .build();
-            Long updatedMatchingPost = matchingService.updateMatchingPost(matchingPostId, convertedDto);
+            Long updatedMatchingPost = matchingPostService.updateMatchingPost(matchingPostId, convertedDto);
             UpdateMatchingPostResponse response = new UpdateMatchingPostResponse(updatedMatchingPost);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch(IllegalArgumentException e){
