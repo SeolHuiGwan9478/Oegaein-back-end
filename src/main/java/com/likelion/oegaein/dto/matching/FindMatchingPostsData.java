@@ -5,9 +5,11 @@ import com.likelion.oegaein.domain.matching.MatchingStatus;
 import com.likelion.oegaein.domain.matching.RoomSizeType;
 import com.likelion.oegaein.domain.member.Member;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
 public class FindMatchingPostsData {
     private String title; // Title

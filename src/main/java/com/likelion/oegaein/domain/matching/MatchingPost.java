@@ -3,16 +3,20 @@ package com.likelion.oegaein.domain.matching;
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Builder
+@Getter @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MatchingPost {
     @Id @GeneratedValue
     @Column(name = "matching_post_id")
@@ -40,11 +44,11 @@ public class MatchingPost {
     @JoinColumn(name = "user_id")
     private Member author;
 
-    public void matchingPostUpdate(UpdateMatchingPostData dto){
-        if(dto.getTitle() != null) this.title = dto.getTitle();
-        if(dto.getContent() != null) this.content = dto.getContent();
-        if(dto.getDeadline() != null) this.deadline = dto.getDeadline();
-        if(dto.getDongType() != null) this.dong = dto.getDongType();
-        if(dto.getRoomSizeType() != null) this.roomSize = dto.getRoomSizeType();
+    public void updateMatchingPost(UpdateMatchingPostData dto){
+        if(!title.equals(dto.getTitle())) title = dto.getTitle();
+        if(!content.equals(dto.getContent())) content = dto.getContent();
+        if(!deadline.equals(dto.getDeadline())) deadline = dto.getDeadline();
+        if(!dong.equals(dto.getDongType())) dong = dto.getDongType();
+        if(!roomSize.equals(dto.getRoomSizeType())) roomSize = dto.getRoomSizeType();
     }
 }

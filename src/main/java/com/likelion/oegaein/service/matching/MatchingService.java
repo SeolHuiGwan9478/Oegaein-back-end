@@ -1,6 +1,7 @@
 package com.likelion.oegaein.service.matching;
 
 import com.likelion.oegaein.domain.matching.MatchingPost;
+import com.likelion.oegaein.domain.matching.MatchingStatus;
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.dto.matching.*;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
@@ -54,6 +55,7 @@ public class MatchingService {
                 .deadline(dto.getDeadline())
                 .dong(dto.getDongType())
                 .roomSize(dto.getRoomSizeType())
+                .matchingStatus(MatchingStatus.WAITING)
                 .author(author)
                 .build();
         // persist entity
@@ -86,7 +88,10 @@ public class MatchingService {
 
     // 매칭글 수정
     @Transactional
-    public Long updateMatchingPost(UpdateMatchingPostData dto){
-        return dto.getMatchingPostId();
+    public Long updateMatchingPost(Long matchingPostId, UpdateMatchingPostData dto){
+        MatchingPost matchingPost = matchingPostRepository.findById(matchingPostId)
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingPostId));
+        matchingPost.updateMatchingPost(dto); // dirty checking
+        return matchingPostId;
     }
 }
