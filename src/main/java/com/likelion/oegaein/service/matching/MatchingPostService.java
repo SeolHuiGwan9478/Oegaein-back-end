@@ -13,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MatchingService {
+public class MatchingPostService {
     private final MatchingPostRepository matchingPostRepository;
     private final MemberRepository memberRepository;
 

@@ -1,7 +1,7 @@
 package com.likelion.oegaein.controller.matching;
 
 import com.likelion.oegaein.dto.matching.*;
-import com.likelion.oegaein.service.matching.MatchingService;
+import com.likelion.oegaein.service.matching.MatchingPostService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class MatchingPostController {
-    private final MatchingService matchingService;
+    private final MatchingPostService matchingService;
     private final MemberService memberService;
 
     @GetMapping("/api/v1/matchingposts") // 전체 매칭 글 조회
