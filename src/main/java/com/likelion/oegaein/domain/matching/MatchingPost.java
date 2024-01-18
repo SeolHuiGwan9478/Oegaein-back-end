@@ -12,6 +12,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Builder
@@ -43,6 +45,10 @@ public class MatchingPost {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member author;
+
+    @OneToMany(mappedBy = "matchingPost")
+    @Builder.Default
+    private List<MatchingRequest> matchingRequests = new ArrayList<>();
 
     public void updateMatchingPost(UpdateMatchingPostData dto){
         if(!title.equals(dto.getTitle())) title = dto.getTitle();
