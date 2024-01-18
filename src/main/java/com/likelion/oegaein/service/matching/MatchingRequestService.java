@@ -5,11 +5,17 @@ import com.likelion.oegaein.domain.matching.MatchingRequest;
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.dto.matching.CreateMatchingReqData;
 import com.likelion.oegaein.dto.matching.CreateMatchingReqResponse;
+import com.likelion.oegaein.dto.matching.FindMatchingReqData;
+import com.likelion.oegaein.dto.matching.FindMatchingReqsResponse;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
 import com.likelion.oegaein.repository.matching.MatchingRequestRepository;
+import com.likelion.oegaein.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,6 +23,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class MatchingRequestService {
     private final MatchingRequestRepository matchingRequestRepository;
     private final MatchingPostRepository matchingPostRepository;
+    private final MemberRepository memberRepository;
+
+    private final int PERCENTAGE_VALUE = 100;
+
+    public FindMatchingReqsResponse findByParticipantMatchingRequest(Long participantId){
+        Member participant = memberRepository.findById(participantId);
+        List<MatchingRequest> matchingRequests = matchingRequestRepository.findByParticipant(participant);
+        List<FindMatchingReqData> matchingReqsData = new ArrayList<>();
+        for(MatchingRequest matchingRequest : matchingRequests){
+            MatchingPost matchingPost = matchingPostRepository.findById(matchingRequest.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Reference Error: " + matchingRequest.getId()));
+            // calculate matching rate
+            double numOfTargetMatchingRequest = matchingPost.getRoomSize().getValueNum();
+            double numOfMatchingRequest = matchingPost.getMatchingRequests().size();
+            double matchingRate = (numOfMatchingRequest/numOfTargetMatchingRequest) * PERCENTAGE_VALUE;
+            // create FindMatchingReqData
+            FindMatchingReqData matchingReqData = new FindMatchingReqData(matchingRate, matchingPost.getTitle());
+            matchingReqsData.add(matchingReqData);
+        }
+        return new FindMatchingReqsResponse(matchingReqsData.size(), matchingReqsData);
+    }
 
     @Transactional
     public CreateMatchingReqResponse createMatchingRequest(CreateMatchingReqData dto){

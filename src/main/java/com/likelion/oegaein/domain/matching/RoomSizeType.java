@@ -6,18 +6,20 @@ import lombok.Getter;
 
 @Getter
 public enum RoomSizeType {
-    Two("2인실"),
-    Four("4인실");
+    Two("2인실", 2),
+    Four("4인실", 4);
 
-    RoomSizeType(String value){
-        this.value = value;
+    RoomSizeType(String valueName, int valueNum){
+        this.valueName = valueName;
+        this.valueNum = valueNum;
     }
-    public final String value;
+    public final String valueName;
+    public final int valueNum;
 
     @JsonCreator
     public RoomSizeType deserializerRoomSize(String value){
         for(RoomSizeType roomSizeType : RoomSizeType.values()){
-            if(roomSizeType.getValue().equals(value)) {
+            if(roomSizeType.getValueName().equals(value)) {
                 return roomSizeType;
             }
         }
@@ -26,6 +28,6 @@ public enum RoomSizeType {
 
     @JsonValue
     public String roomSizeSerializer(){
-        return value;
+        return valueName;
     }
 }

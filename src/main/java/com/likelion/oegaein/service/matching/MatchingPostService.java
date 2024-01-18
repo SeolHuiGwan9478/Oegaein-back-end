@@ -30,7 +30,7 @@ public class MatchingPostService {
                 .map(matchingPost -> FindMatchingPostsData.builder()
                         .title(matchingPost.getTitle())
                         .restDay(
-                                Duration.between(matchingPost.getDeadline(), LocalDateTime.now()).toDays()
+                                Duration.between(LocalDateTime.now(), matchingPost.getDeadline()).toDays()
                         )
                         .dong(matchingPost.getDong())
                         .roomSize(matchingPost.getRoomSize())
@@ -79,6 +79,7 @@ public class MatchingPostService {
     }
 
     // 특정 매칭글 삭제
+    @Transactional
     public void removeMatchingPost(Long matchingPostId) {
         MatchingPost findMatchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingPostId));
