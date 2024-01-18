@@ -1,6 +1,5 @@
 package com.likelion.oegaein.controller.matching;
 
-import com.likelion.oegaein.domain.matching.MatchingPost;
 import com.likelion.oegaein.dto.matching.*;
 import com.likelion.oegaein.service.matching.MatchingService;
 import com.likelion.oegaein.service.member.MemberService;
@@ -9,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,19 +53,19 @@ public class MatchingPostController {
     }
 
     @PutMapping("/api/v1/matchingPosts/{matchingpostid}")
-    public ResponseEntity<Long> patchMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
+    public ResponseEntity<UpdateMatchingPostResponse> putMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
                                                   @RequestBody UpdateMatchingPostRequest dto){
         try{
-            UpdateMatchingPostData changedDto = UpdateMatchingPostData.builder()
-                    .matchingPostId(matchingPostId)
+            UpdateMatchingPostData convertedDto = UpdateMatchingPostData.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .deadline(dto.getDeadline())
                     .dongType(dto.getDongType())
                     .roomSizeType(dto.getRoomSizeType())
                     .build();
-            Long updatedMatchingPost = matchingService.updateMatchingPost(changedDto);
-            return new ResponseEntity<>(updatedMatchingPost, HttpStatus.OK);
+            Long updatedMatchingPost = matchingService.updateMatchingPost(matchingPostId, convertedDto);
+            UpdateMatchingPostResponse response = new UpdateMatchingPostResponse(updatedMatchingPost);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }catch(IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
