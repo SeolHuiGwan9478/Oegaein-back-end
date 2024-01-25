@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class MatchingRequestController {
+public class MatchingRequestApiController {
     private final MatchingRequestService matchingRequestService;
 
     @GetMapping("/api/v1/matchingrequests")

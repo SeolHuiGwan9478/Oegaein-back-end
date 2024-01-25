@@ -2,10 +2,12 @@ package com.likelion.oegaein.domain.member;
 
 import com.likelion.oegaein.domain.global.Gender;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter
 public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")

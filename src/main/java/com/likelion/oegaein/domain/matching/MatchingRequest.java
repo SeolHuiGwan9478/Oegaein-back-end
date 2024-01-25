@@ -19,6 +19,9 @@ public class MatchingRequest {
     @JoinColumn(name = "participant_id")
     private Member participant;
 
+    @Enumerated(EnumType.STRING)
+    private MatchingAcceptance matchingAcceptance; // 매칭 수락 여부 : 수락/거부
+
     protected MatchingRequest(){}
     public MatchingRequest(MatchingPost matchingPost, Member participant){
         this.matchingPost = matchingPost;
