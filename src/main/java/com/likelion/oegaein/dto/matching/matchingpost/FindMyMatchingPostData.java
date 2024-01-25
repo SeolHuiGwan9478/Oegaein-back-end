@@ -1,7 +1,8 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingpost;
 
 import com.likelion.oegaein.domain.matching.*;
 import com.likelion.oegaein.domain.member.Profile;
+import com.likelion.oegaein.dto.matching.matchingrequest.FindMatchingReqInPostData;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,8 @@ public class FindMyMatchingPostData {
         // 매칭 참가자 현황
         List<MatchingRequest> findMatchingRequests = matchingPost.getMatchingRequests();
         List<FindMatchingReqInPostData> convertedMatchingRequests = findMatchingRequests.stream().map(
-                findMatchingRequest -> FindMatchingReqInPostData.toFindMatchingReqInPostData(new Profile()) // 임시 프로필 대입
+                findMatchingRequest -> FindMatchingReqInPostData.toFindMatchingReqInPostData(
+                        findMatchingRequest.getParticipant().getProfile()) // 임시 프로필 대입
         ).toList();
         findMyMatchingPostData.setMatchingRequests(convertedMatchingRequests);
         return findMyMatchingPostData;

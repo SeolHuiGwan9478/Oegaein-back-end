@@ -1,6 +1,6 @@
 package com.likelion.oegaein.controller.matching;
 
-import com.likelion.oegaein.dto.matching.*;
+import com.likelion.oegaein.dto.matching.matchingpost.*;
 import com.likelion.oegaein.service.matching.MatchingPostService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
 
 @RestController
 @RequiredArgsConstructor

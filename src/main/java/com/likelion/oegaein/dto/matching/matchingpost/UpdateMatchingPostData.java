@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingpost;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.likelion.oegaein.domain.matching.DongType;

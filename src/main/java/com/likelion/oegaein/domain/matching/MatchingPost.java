@@ -1,7 +1,7 @@
 package com.likelion.oegaein.domain.matching;
 
 import com.likelion.oegaein.domain.member.Member;
-import com.likelion.oegaein.dto.matching.UpdateMatchingPostData;
+import com.likelion.oegaein.dto.matching.matchingpost.UpdateMatchingPostData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

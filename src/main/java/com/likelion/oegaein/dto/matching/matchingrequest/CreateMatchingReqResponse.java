@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingrequest;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
