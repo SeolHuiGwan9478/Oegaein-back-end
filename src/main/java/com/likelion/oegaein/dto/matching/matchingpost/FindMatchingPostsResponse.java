@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingpost;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

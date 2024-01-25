@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingrequest;
 
 import com.likelion.oegaein.domain.global.Gender;
 import com.likelion.oegaein.domain.member.*;

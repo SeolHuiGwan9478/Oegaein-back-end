@@ -3,7 +3,7 @@ package com.likelion.oegaein.service.matching;
 import com.likelion.oegaein.domain.matching.MatchingPost;
 import com.likelion.oegaein.domain.matching.MatchingStatus;
 import com.likelion.oegaein.domain.member.Member;
-import com.likelion.oegaein.dto.matching.*;
+import com.likelion.oegaein.dto.matching.matchingpost.*;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
 import com.likelion.oegaein.repository.matching.query.MatchingPostQueryRepository;
 import com.likelion.oegaein.repository.member.MemberRepository;
