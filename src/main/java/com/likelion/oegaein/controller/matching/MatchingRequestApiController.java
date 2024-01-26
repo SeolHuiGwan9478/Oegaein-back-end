@@ -1,6 +1,9 @@
 package com.likelion.oegaein.controller.matching;
 
-import com.likelion.oegaein.dto.matching.*;
+import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqData;
+import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqRequest;
+import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqResponse;
+import com.likelion.oegaein.dto.matching.matchingrequest.FindMatchingReqsResponse;
 import com.likelion.oegaein.service.matching.MatchingRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class MatchingRequestController {
+public class MatchingRequestApiController {
     private final MatchingRequestService matchingRequestService;
 
     @GetMapping("/api/v1/matchingrequests")

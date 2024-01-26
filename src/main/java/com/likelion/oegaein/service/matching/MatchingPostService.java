@@ -3,8 +3,9 @@ package com.likelion.oegaein.service.matching;
 import com.likelion.oegaein.domain.matching.MatchingPost;
 import com.likelion.oegaein.domain.matching.MatchingStatus;
 import com.likelion.oegaein.domain.member.Member;
-import com.likelion.oegaein.dto.matching.*;
+import com.likelion.oegaein.dto.matching.matchingpost.*;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
+import com.likelion.oegaein.repository.matching.query.MatchingPostQueryRepository;
 import com.likelion.oegaein.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MatchingPostService {
     private final MatchingPostRepository matchingPostRepository;
+    private final MatchingPostQueryRepository matchingPostQueryRepository;
     private final MemberRepository memberRepository;
 
     // 모든 매칭글 조회
@@ -93,5 +95,17 @@ public class MatchingPostService {
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingPostId));
         matchingPost.updateMatchingPost(dto); // dirty checking
         return matchingPostId;
+    }
+
+    // 내 매칭글 조회
+    public FindMyMatchingPostResponse findMyMatchingPosts(){
+        Member author = new Member(); // 임시 인증 유저
+        List<MatchingPost> findMatchingPosts = matchingPostQueryRepository.findByMember(author);
+        List<FindMyMatchingPostData> findMyMatchingPostData = findMatchingPosts.stream()
+                .map(FindMyMatchingPostData::toFindMyMatchingPostData
+                ).toList();
+        return FindMyMatchingPostResponse.builder()
+                .data(findMyMatchingPostData)
+                .build();
     }
 }

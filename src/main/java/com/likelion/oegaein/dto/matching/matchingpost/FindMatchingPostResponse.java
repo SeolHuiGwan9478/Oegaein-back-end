@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.matching;
+package com.likelion.oegaein.dto.matching.matchingpost;
 
 import com.likelion.oegaein.domain.matching.DongType;
 import com.likelion.oegaein.domain.matching.MatchingStatus;

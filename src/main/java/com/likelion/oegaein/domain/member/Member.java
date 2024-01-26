@@ -22,5 +22,6 @@ public class Member extends BaseTime {
     private String password;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
+    @OneToOne(mappedBy = "member")
     private Profile profile;
 }

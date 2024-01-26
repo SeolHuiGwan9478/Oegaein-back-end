@@ -1,6 +1,6 @@
 package com.likelion.oegaein.controller.matching;
 
-import com.likelion.oegaein.dto.matching.*;
+import com.likelion.oegaein.dto.matching.matchingpost.*;
 import com.likelion.oegaein.service.matching.MatchingPostService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class MatchingPostController {
+public class MatchingPostApiController {
     private final MatchingPostService matchingPostService;
     private final MemberService memberService;
 
@@ -71,4 +71,16 @@ public class MatchingPostController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/api/v1/my-matchingposts")
+    public ResponseEntity<FindMyMatchingPostResponse> getMyMatchingPosts(){
+        log.info("Request to get my matching posts");
+        try{
+            FindMyMatchingPostResponse response = matchingPostService.findMyMatchingPosts();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){ // 에러 수정 필요
+            return new ResponseEntity<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        }
+    }
+
 }
