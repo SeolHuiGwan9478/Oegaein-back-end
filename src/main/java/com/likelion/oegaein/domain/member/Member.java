@@ -19,9 +19,6 @@ public class Member extends BaseTime {
     private Long id;
     @Column(unique = true)
     private String email;
-    private String password;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
     @OneToOne(mappedBy = "member")
     private Profile profile;
 }

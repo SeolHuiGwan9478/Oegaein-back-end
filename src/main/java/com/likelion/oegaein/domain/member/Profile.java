@@ -21,13 +21,12 @@ public class Profile {
     private Mbti mbti;
     private Smoking smoking;
     private SleepingHabit sleepingHabit;
-//    private LocalDate sleepTime;
     private LifePattern lifePattern;
     private Outing outing;
     private CleaningCycle cleaningCycle;
     private Sensitivity soundSensitivity;
     private String introduce;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     private Member member;
 }

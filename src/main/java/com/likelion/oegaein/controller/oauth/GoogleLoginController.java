@@ -18,7 +18,6 @@ public class GoogleLoginController {
     private String googleClientId;
     @Value("${google.client.pw}")
     private String googleClientPw;
-
     @Value("${google.datasource.redirect-uri}")
     private String redirectUri;
 

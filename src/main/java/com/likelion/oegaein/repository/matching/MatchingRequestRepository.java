@@ -5,7 +5,8 @@ import com.likelion.oegaein.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MatchingRequestRepository extends JpaRepository<MatchingRequest, Long> {
-    List<MatchingRequest> findByParticipant(Member participant);
+    List<MatchingRequest> findByParticipant(Optional<Member> participant);
 }
