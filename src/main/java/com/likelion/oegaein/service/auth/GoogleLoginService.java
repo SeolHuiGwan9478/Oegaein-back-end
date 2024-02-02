@@ -59,4 +59,8 @@ public class GoogleLoginService {
         memberService.join(email, refreshToken);
         return email;
     }
+
+    public boolean isHufsEmail(String email) {
+        return email.endsWith("@hufs.ac.kr");
+    }
 }

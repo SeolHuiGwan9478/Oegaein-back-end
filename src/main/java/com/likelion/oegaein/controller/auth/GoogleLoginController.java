@@ -6,6 +6,7 @@ import com.likelion.oegaein.dto.auth.GoogleResponse;
 import com.likelion.oegaein.service.auth.GoogleLoginService;
 import com.likelion.oegaein.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @CrossOrigin("*")
 public class GoogleLoginController {
     private final GoogleLoginService googleLoginService;
@@ -27,6 +29,12 @@ public class GoogleLoginController {
 
     @RequestMapping(value = "/api/v1/oauth2/google/login", method = RequestMethod.GET)
     public String loginGoogle(@RequestParam(value = "code") String authCode) {
-        return googleLoginService.access(authCode);
+        String email = googleLoginService.access(authCode);
+        if (googleLoginService.isHufsEmail(email)) {
+            return email;
+        } else {
+            log.info("Not HUFS Email");
+            return "한국외국어대학교 메일로 가입해주세요";
+        }
     }
 }
