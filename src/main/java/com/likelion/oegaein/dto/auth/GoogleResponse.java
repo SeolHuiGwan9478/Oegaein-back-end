@@ -1,4 +1,4 @@
-package com.likelion.oegaein.dto.oauth;
+package com.likelion.oegaein.dto.auth;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

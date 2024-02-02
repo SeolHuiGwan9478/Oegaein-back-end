@@ -19,6 +19,13 @@ public class Member extends BaseTime {
     private Long id;
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
+    private String name;
+    private String refreshToken;
     @OneToOne(mappedBy = "member")
     private Profile profile;
+
+    public void updateName(String newName) {
+        this.name = newName;
+    }
 }

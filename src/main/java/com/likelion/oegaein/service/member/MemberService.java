@@ -3,6 +3,7 @@ package com.likelion.oegaein.service.member;
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,35 +11,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
 
     // 회원 가입
-    @Transactional
-    public Long join(Member member) {
-        validateDuplicateMember(member);
+    public void join(String email, String refreshToken) {
+        validateDuplicateEmail(email);
+        Member member = Member.builder()
+                .email(email)
+                .name("사용자")
+                .refreshToken(refreshToken)
+                .build();
         memberRepository.save(member);
-        return member.getId();
     }
 
     // 중복 회원 검사
-    private void validateDuplicateMember(Member member) {
+    private void validateDuplicateEmail(String email) {
         //EXCEPTION
-        Optional<Member> findMember = memberRepository.findById(member.getId());
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         if (findMember != null) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
-    // 회원 전체 조회
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
-    }
-
-    // 회원 한명 조회
-    public Optional<Member> findOne(Long memberId) {
-        return memberRepository.findById(memberId);
+    // 유효 닉네임 검사
+    private void isValidName(Member member) {
     }
 }

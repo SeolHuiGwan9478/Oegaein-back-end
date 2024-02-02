@@ -1,6 +1,5 @@
 package com.likelion.oegaein.dto.matching.matchingrequest;
 
-import com.likelion.oegaein.domain.global.Gender;
 import com.likelion.oegaein.domain.member.*;
 import lombok.Data;
 
@@ -26,7 +25,7 @@ public class FindMatchingReqInPostData {
     // convert to FindMatchingReqInPostData
     public static FindMatchingReqInPostData toFindMatchingReqInPostData(Profile profile){
         FindMatchingReqInPostData findMatchingReqInPostData = new FindMatchingReqInPostData();
-        findMatchingReqInPostData.name = profile.getName();
+        findMatchingReqInPostData.name = profile.getMember().getName();
         findMatchingReqInPostData.gender = profile.getGender();
         findMatchingReqInPostData.studentNo = profile.getStudentNo();
         findMatchingReqInPostData.major = profile.getMajor();

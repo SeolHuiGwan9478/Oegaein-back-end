@@ -1,6 +1,5 @@
 package com.likelion.oegaein.domain.member;
 
-import com.likelion.oegaein.domain.global.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -12,7 +11,6 @@ public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")
     private Long id;
-    private String name;
     private Gender gender;
     private String studentNo;
     private String major;
