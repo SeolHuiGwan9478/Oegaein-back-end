@@ -22,7 +22,6 @@ public class MemberService {
         validateDuplicateEmail(email);
         Member member = Member.builder()
                 .email(email)
-                .name("사용자")
                 .refreshToken(refreshToken)
                 .build();
         memberRepository.save(member);
