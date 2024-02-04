@@ -8,10 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +19,12 @@ import java.util.stream.Collectors;
 public class MemberController {
     private final MemberService memberService;
 
+    @GetMapping("/api/v1/members/profile")
+    public void getMemberProfile() {
+
+    }
+
+    @PutMapping("/api/v1/members/profile")
     public void updateProfile(@RequestBody String name) {
     }
 }

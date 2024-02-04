@@ -1,13 +1,16 @@
 package com.likelion.oegaein.domain.member;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Getter
+@Builder
+@Transactional
 public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")
@@ -31,8 +34,4 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     private Member member;
-
-    public void updateName(String newName) {
-        this.name = newName;
-    }
 }

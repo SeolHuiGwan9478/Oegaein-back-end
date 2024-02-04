@@ -29,14 +29,17 @@ public class MemberService {
 
     // 중복 회원 검사
     private void validateDuplicateEmail(String email) {
-        //EXCEPTION
         Optional<Member> findMember = memberRepository.findByEmail(email);
-        if (findMember != null) {
+        if (findMember.isPresent()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
     // 유효 닉네임 검사
-    private void isValidName(Member member) {
+    private void isValidName(String name) {
+        Optional<Member> findMember = memberRepository.findByName(name);
+        if (findMember.isPresent()) {
+            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+        }
     }
 }
