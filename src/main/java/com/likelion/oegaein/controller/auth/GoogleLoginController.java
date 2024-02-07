@@ -11,19 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class GoogleLoginController {
     private final GoogleLoginService googleLoginService;
-    @PostMapping("/api/v1/oauth2/google/login")
+    @GetMapping("/api/v1/oauth2/google/login")
     public String loginUrlGoogle() {
         return googleLoginService.requestUrl();
     }
 
-    @GetMapping("/api/v1/oauth2/google/login")
+    @PostMapping("/api/v1/oauth2/google/login")
     public void loginGoogle(@RequestParam(value = "code") String authCode) {
         String email = googleLoginService.access(authCode);
-        if (googleLoginService.isHufsEmail(email)) {
-            log.info(email);
-            googleLoginService.access(authCode);
-        } else {
-            log.info("Not HUFS Email");
-        }
+        googleLoginService.isHufsEmail(email);
     }
 }

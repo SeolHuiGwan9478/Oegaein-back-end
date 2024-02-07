@@ -3,6 +3,8 @@ package com.likelion.oegaein.service.auth;
 import com.likelion.oegaein.dto.auth.GoogleInfResponse;
 import com.likelion.oegaein.dto.auth.GoogleRequest;
 import com.likelion.oegaein.dto.auth.GoogleResponse;
+import com.likelion.oegaein.exception.CustomErrorCode;
+import com.likelion.oegaein.exception.CustomException;
 import com.likelion.oegaein.service.member.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.likelion.oegaein.exception.CustomErrorCode.HUFS_EMAIL_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +64,12 @@ public class GoogleLoginService {
         return email;
     }
 
-    public boolean isHufsEmail(String email) {
-        return email.endsWith("@hufs.ac.kr");
+    public void isHufsEmail(String email) {
+        if (email.endsWith("@hufs.ac.kr")) {
+            log.info(email);
+        } else {
+            log.info("Not HUFS Email");
+            throw new CustomException(HUFS_EMAIL_ERROR);
+        }
     }
 }
