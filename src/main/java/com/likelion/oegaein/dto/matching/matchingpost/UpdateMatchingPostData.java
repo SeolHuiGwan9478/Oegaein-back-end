@@ -6,6 +6,7 @@ import com.likelion.oegaein.domain.matching.RoomSizeType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class UpdateMatchingPostData {
     private String title;
     private String content;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     private DongType dongType;
     private RoomSizeType roomSizeType;
 }

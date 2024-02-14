@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MatchingPost {
     @Enumerated(EnumType.STRING)
     private RoomSizeType roomSize; // 기숙사 방 사이즈(* 2인실/4인실)
 
-    private LocalDateTime deadline;
+    private LocalDate deadline;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -41,7 +42,7 @@ public class MatchingPost {
     @Enumerated(EnumType.STRING)
     private MatchingStatus matchingStatus; // 매칭 상태, WAITING, COMPLETED
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member author;
 
@@ -50,10 +51,10 @@ public class MatchingPost {
     private List<MatchingRequest> matchingRequests = new ArrayList<>();
 
     public void updateMatchingPost(UpdateMatchingPostData dto){
-        if(!title.equals(dto.getTitle())) title = dto.getTitle();
-        if(!content.equals(dto.getContent())) content = dto.getContent();
-        if(!deadline.equals(dto.getDeadline())) deadline = dto.getDeadline();
-        if(!dong.equals(dto.getDongType())) dong = dto.getDongType();
-        if(!roomSize.equals(dto.getRoomSizeType())) roomSize = dto.getRoomSizeType();
+        title = dto.getTitle();
+        content = dto.getContent();
+        deadline = dto.getDeadline();
+        dong = dto.getDongType();
+        roomSize = dto.getRoomSizeType();
     }
 }
