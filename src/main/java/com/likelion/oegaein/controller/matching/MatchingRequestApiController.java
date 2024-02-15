@@ -1,9 +1,7 @@
 package com.likelion.oegaein.controller.matching;
 
-import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqData;
-import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqRequest;
-import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqResponse;
-import com.likelion.oegaein.dto.matching.matchingrequest.FindMatchingReqsResponse;
+import com.likelion.oegaein.dto.global.ResponseDto;
+import com.likelion.oegaein.dto.matching.matchingrequest.*;
 import com.likelion.oegaein.service.matching.MatchingRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class MatchingRequestApiController {
     private final MatchingRequestService matchingRequestService;
 
-    @GetMapping("/api/v1/matchingrequests")
+    @GetMapping("/api/v1/my-matchingrequests")
     public ResponseEntity<FindMatchingReqsResponse> getMatchingRequests(){
         log.info("Request to get matching requests");
         FindMatchingReqsResponse response = matchingRequestService.findByParticipantMatchingRequest(153L);
@@ -37,5 +35,19 @@ public class MatchingRequestApiController {
         log.info("Request to delete matching request");
         matchingRequestService.removeMatchingRequest(matchingRequestId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/api/v1/matchingrequest/{matchingrequestsid}/accept")
+    public ResponseEntity<ResponseDto> acceptMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
+        log.info("Request to accept matching request");
+        AcceptMatchingReqResponse response = matchingRequestService.acceptMatchingRequest(matchingRequestId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PatchMapping("/api/v1/matchingrequest/{matchingrequestsid}/reject")
+    public ResponseEntity<ResponseDto> rejectMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
+        log.info("Request to accept matching request");
+        RejectMatchingReqResponse response = matchingRequestService.rejectMatchingRequest(matchingRequestId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

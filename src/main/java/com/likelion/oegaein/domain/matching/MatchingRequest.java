@@ -1,6 +1,7 @@
 package com.likelion.oegaein.domain.matching;
 
 import com.likelion.oegaein.domain.member.Member;
+import com.likelion.oegaein.exception.MatchingRequestException;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class MatchingRequest {
     @JoinColumn(name = "matching_post_id")
     private MatchingPost matchingPost;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id")
     private Member participant;
 
@@ -26,5 +27,19 @@ public class MatchingRequest {
     public MatchingRequest(MatchingPost matchingPost, Member participant){
         this.matchingPost = matchingPost;
         this.participant = participant;
+    }
+
+    public void acceptMatchingRequest(){
+        if(this.matchingAcceptance.equals(MatchingAcceptance.ACCEPT)){
+            throw new MatchingRequestException("이미 수락된 매칭 요청입니다.");
+        }
+        this.matchingAcceptance = MatchingAcceptance.ACCEPT;
+    }
+
+    public void rejectMatchingRequest(){
+        if(this.matchingAcceptance.equals(MatchingAcceptance.REJECT)){
+            throw new MatchingRequestException("이미 거부된 매칭 요청입니다.");
+        }
+        this.matchingAcceptance = MatchingAcceptance.REJECT;
     }
 }

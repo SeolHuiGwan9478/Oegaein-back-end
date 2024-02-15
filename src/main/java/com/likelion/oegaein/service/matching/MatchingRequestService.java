@@ -3,10 +3,7 @@ package com.likelion.oegaein.service.matching;
 import com.likelion.oegaein.domain.matching.MatchingPost;
 import com.likelion.oegaein.domain.matching.MatchingRequest;
 import com.likelion.oegaein.domain.member.Member;
-import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqData;
-import com.likelion.oegaein.dto.matching.matchingrequest.CreateMatchingReqResponse;
-import com.likelion.oegaein.dto.matching.matchingrequest.FindMatchingReqData;
-import com.likelion.oegaein.dto.matching.matchingrequest.FindMatchingReqsResponse;
+import com.likelion.oegaein.dto.matching.matchingrequest.*;
 import com.likelion.oegaein.repository.matching.MatchingPostRepository;
 import com.likelion.oegaein.repository.matching.MatchingRequestRepository;
 import com.likelion.oegaein.repository.member.MemberRepository;
@@ -35,11 +32,14 @@ public class MatchingRequestService {
             MatchingPost matchingPost = matchingPostRepository.findById(matchingRequest.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Reference Error: " + matchingRequest.getId()));
             // calculate matching rate
-            double numOfTargetMatchingRequest = matchingPost.getRoomSize().getValueNum();
-            double numOfMatchingRequest = matchingPost.getMatchingRequests().size();
-            double matchingRate = (numOfMatchingRequest/numOfTargetMatchingRequest) * PERCENTAGE_VALUE;
+            double matchingRate = getMatchingRate(matchingPost);
             // create FindMatchingReqData
-            FindMatchingReqData matchingReqData = new FindMatchingReqData(matchingRate, matchingPost.getTitle());
+            FindMatchingReqData matchingReqData = FindMatchingReqData.builder()
+                    .matchingPostId(matchingPost.getId())
+                    .matchingPostTitle(matchingPost.getTitle())
+                    .matchingRate(matchingRate)
+                    .matchingAcceptance(matchingRequest.getMatchingAcceptance())
+                    .build();
             matchingReqsData.add(matchingReqData);
         }
         return new FindMatchingReqsResponse(matchingReqsData.size(), matchingReqsData);
@@ -62,5 +62,38 @@ public class MatchingRequestService {
         MatchingRequest matchingRequest = matchingRequestRepository.findById(matchingRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingRequestId));
         matchingRequestRepository.delete(matchingRequest);
+    }
+
+    @Transactional
+    public AcceptMatchingReqResponse acceptMatchingRequest(Long matchingRequestId){
+        MatchingRequest matchingRequest = matchingRequestRepository.findById(matchingRequestId)
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingRequestId));
+        // change matchingAcceptance
+        matchingRequest.acceptMatchingRequest();
+        // return matchingReqResponse
+        return new AcceptMatchingReqResponse(
+                matchingRequest.getId(),
+                1L // 임시 채팅방 번호
+        );
+    }
+
+    @Transactional
+    public RejectMatchingReqResponse rejectMatchingRequest(Long matchingRequestId){
+        MatchingRequest matchingRequest = matchingRequestRepository.findById(matchingRequestId)
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingRequestId));
+        // change matchingAcceptance
+        matchingRequest.rejectMatchingRequest();
+        // return matchingReqResponse
+        return new RejectMatchingReqResponse(
+                matchingRequest.getId()
+        );
+    }
+
+    // custom method
+    private double getMatchingRate(MatchingPost matchingPost) {
+        // calculate matching rate
+        double numOfTargetMatchingRequest = matchingPost.getRoomSize().getValueNum();
+        double numOfMatchingRequest = matchingPost.getMatchingRequests().size();
+        return (numOfMatchingRequest/numOfTargetMatchingRequest) * PERCENTAGE_VALUE;
     }
 }
