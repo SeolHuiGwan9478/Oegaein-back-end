@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @Transactional
 public class Profile {

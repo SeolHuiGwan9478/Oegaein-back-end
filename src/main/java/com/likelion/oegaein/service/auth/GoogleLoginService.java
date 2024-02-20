@@ -26,23 +26,28 @@ import static com.likelion.oegaein.exception.CustomErrorCode.HUFS_EMAIL_ERROR;
 @Transactional
 @Slf4j
 public class GoogleLoginService {
+    private final RestTemplate restTemplate;
     private final MemberService memberService;
     @Value("${google.client.id}")
     private String googleClientId;
     @Value("${google.client.pw}")
     private String googleClientPw;
-    @Value("${google.datasource.redirect-uri}")
+    @Value("${google.uri.redirect}")
     private String redirectUri;
+    @Value("${google.uri.api-domain")
+    private String domainUri;
+
     public String requestUrl() {
-        return "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
+        log.info("let take URL");
+        String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
                 + "&redirect_uri=" + redirectUri + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
+        log.info("generate URL");
+        return reqUrl;
     }
 
     public String access(String authCode) {
-        RestTemplate restTemplate = new RestTemplate();
         // 요청
-        GoogleRequest googleOAuthRequestParam = GoogleRequest
-                .builder()
+        GoogleRequest googleOAuthRequestParam = GoogleRequest.builder()
                 .clientId(googleClientId)
                 .clientSecret(googleClientPw)
                 .code(authCode)
@@ -51,7 +56,7 @@ public class GoogleLoginService {
 
         ResponseEntity<GoogleResponse> googleResponseEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/token",
                 googleOAuthRequestParam, GoogleResponse.class);
-        String jwtToken= Objects.requireNonNull(googleResponseEntity.getBody()).getId_token();
+        String jwtToken= Objects.requireNonNull(googleResponseEntity.getBody()).getIdToken();
         log.info("jwtToken: " + jwtToken);
 
         Map<String, String> map = new HashMap<>();
@@ -59,7 +64,7 @@ public class GoogleLoginService {
         ResponseEntity<GoogleInfResponse> googleInfResponseEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/tokeninfo",
                 map, GoogleInfResponse.class);
         String email = Objects.requireNonNull(googleInfResponseEntity.getBody()).getEmail();
-        String refreshToken = Objects.requireNonNull(googleResponseEntity.getBody()).getRefresh_token();
+        String refreshToken = Objects.requireNonNull(googleResponseEntity.getBody()).getRefreshToken();
         memberService.join(email, refreshToken);
         return email;
     }
