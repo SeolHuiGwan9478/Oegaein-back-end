@@ -1,10 +1,10 @@
 package com.likelion.oegaein.service.auth;
 
-import com.likelion.oegaein.dto.auth.GoogleInfResponse;
-import com.likelion.oegaein.dto.auth.GoogleRequest;
-import com.likelion.oegaein.dto.auth.GoogleResponse;
-import com.likelion.oegaein.exception.CustomErrorCode;
+import com.likelion.oegaein.dto.auth.GoogleInfoDto;
+import com.likelion.oegaein.dto.auth.GoogleRequestDto;
+import com.likelion.oegaein.dto.auth.GoogleResponseDto;
 import com.likelion.oegaein.exception.CustomException;
+import com.likelion.oegaein.repository.member.MemberRepository;
 import com.likelion.oegaein.service.member.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.likelion.oegaein.exception.CustomErrorCode.HUFS_EMAIL_ERROR;
 
@@ -28,14 +26,16 @@ import static com.likelion.oegaein.exception.CustomErrorCode.HUFS_EMAIL_ERROR;
 public class GoogleLoginService {
     private final RestTemplate restTemplate;
     private final MemberService memberService;
-    @Value("${google.client.id}")
+    @Value("${google.client-id}")
     private String googleClientId;
-    @Value("${google.client.pw}")
-    private String googleClientPw;
-    @Value("${google.uri.redirect}")
+    @Value("${google.client-secret}")
+    private String googleClientSecret;
+    @Value("${google.redirect-uri}")
     private String redirectUri;
-    @Value("${google.uri.api-domain")
-    private String domainUri;
+    @Value("${google.token-uri}")
+    private String tokenUri;
+    @Value("${google.resource-uri}")
+    private String resourceUri;
 
     public String requestUrl() {
         log.info("let take URL");
@@ -46,30 +46,45 @@ public class GoogleLoginService {
     }
 
     public String access(String authCode) {
-        // 요청
-        GoogleRequest googleOAuthRequestParam = GoogleRequest.builder()
-                .clientId(googleClientId)
-                .clientSecret(googleClientPw)
-                .code(authCode)
-                .redirectUri(redirectUri)
-                .grantType("authorization_code").build();
-
-        ResponseEntity<GoogleResponse> googleResponseEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/token",
-                googleOAuthRequestParam, GoogleResponse.class);
-        String jwtToken= Objects.requireNonNull(googleResponseEntity.getBody()).getIdToken();
+        // 토큰 생성
+        GoogleResponseDto jwtToken = requestAccessToken(authCode);
         log.info("jwtToken: " + jwtToken);
 
+        // 사용자 정보 반환
         Map<String, String> map = new HashMap<>();
-        map.put("id_token",jwtToken);
-        ResponseEntity<GoogleInfResponse> googleInfResponseEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/tokeninfo",
-                map, GoogleInfResponse.class);
-        String email = Objects.requireNonNull(googleInfResponseEntity.getBody()).getEmail();
-        String refreshToken = Objects.requireNonNull(googleResponseEntity.getBody()).getRefreshToken();
-        memberService.join(email, refreshToken);
+        map.put("id_token",jwtToken.getIdToken());
+        ResponseEntity<GoogleInfoDto> googleInfoEntity = restTemplate.postForEntity(resourceUri,
+                map, GoogleInfoDto.class);
+        GoogleInfoDto googleInfoDto = googleInfoEntity.getBody();
+        assert googleInfoDto != null;
+
+        // 외대 메일 검증
+        isHufsEmail(googleInfoDto.getEmail());
+        /* 알림 창 표시 후, 로그인 화면으로 redirect */
+
+        // DB에 메일 없으면 가입 진행
+        String email = googleInfoDto.getEmail();
+        if (memberService.findMemberByEmail(email).orElse(null) == null){
+            memberService.join(googleInfoDto, jwtToken);
+            log.info("signup email: " + email);
+        }
+        log.info("access email: " + email);
         return email;
     }
 
-    public void isHufsEmail(String email) {
+    private GoogleResponseDto requestAccessToken(String code) {
+        GoogleRequestDto googleRequest = GoogleRequestDto.builder()
+                .clientId(googleClientId)
+                .clientSecret(googleClientSecret)
+                .code(code)
+                .redirectUri(redirectUri)
+                .grantType("authorization_code").build();
+        ResponseEntity<GoogleResponseDto> googleResponseEntity = restTemplate.postForEntity(tokenUri,
+                googleRequest, GoogleResponseDto.class);
+        return googleResponseEntity.getBody();
+    }
+
+    private void isHufsEmail(String email) {
         if (email.endsWith("@hufs.ac.kr")) {
             log.info(email);
         } else {

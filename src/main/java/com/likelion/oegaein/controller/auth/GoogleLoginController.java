@@ -17,8 +17,7 @@ public class GoogleLoginController {
     }
 
     @GetMapping("/api/v1/oauth2/google/login")
-    public void loginGoogle(@RequestParam(value = "code") String authCode) {
-        String email = googleLoginService.access(authCode);
-        googleLoginService.isHufsEmail(email);
+    public String loginGoogle(@RequestParam(value = "code") String authCode) {
+        return googleLoginService.access(authCode);
     }
 }

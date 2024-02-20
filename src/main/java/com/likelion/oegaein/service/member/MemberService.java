@@ -2,6 +2,8 @@ package com.likelion.oegaein.service.member;
 
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.domain.member.Profile;
+import com.likelion.oegaein.dto.auth.GoogleInfoDto;
+import com.likelion.oegaein.dto.auth.GoogleResponseDto;
 import com.likelion.oegaein.dto.member.SetProfileDto;
 import com.likelion.oegaein.repository.member.MemberRepository;
 import com.likelion.oegaein.repository.member.ProfileRepository;
@@ -21,21 +23,12 @@ public class MemberService {
     private final ProfileRepository profileRepository;
 
     // 회원 가입
-    public void join(String email, String refreshToken) {
-        validateDuplicateEmail(email);
+    public void join(GoogleInfoDto googleInfo, GoogleResponseDto jwtToken) {
         Member member = Member.builder()
-                .email(email)
-                .refreshToken(refreshToken)
+                .email(googleInfo.getEmail())
+                .refreshToken(jwtToken.getRefreshToken())
                 .build();
         memberRepository.save(member);
-    }
-
-    // 중복 회원 검사
-    private void validateDuplicateEmail(String email) {
-        Optional<Member> findMember = memberRepository.findByEmail(email);
-        if (findMember.isPresent()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
-        }
     }
 
     // 유효 닉네임 검사
