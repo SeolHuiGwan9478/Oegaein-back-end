@@ -1,11 +1,11 @@
-package com.likelion.oegaein.dto.oauth;
+package com.likelion.oegaein.dto.auth;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class GoogleRequest {
+public class GoogleRequestDto {
     private String clientId;    // 애플리케이션의 클라이언트 ID
     private String redirectUri; // Google 로그인 후 redirect 위치
     private String clientSecret;    // 클라이언트 보안 비밀

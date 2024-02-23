@@ -1,18 +1,18 @@
 package com.likelion.oegaein.dto.matching.matchingrequest;
 
-import com.likelion.oegaein.domain.global.Gender;
 import com.likelion.oegaein.domain.member.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 public class FindMatchingReqInPostData {
     private String name;
     private Gender gender;
-    private String studentNo;
+    private int studentNo;
     private String major;
-    private LocalDate birthdate;
+    private Date birthdate;
     private Dormitory dormitory;
     private Mbti mbti;
     private Smoking smoking;

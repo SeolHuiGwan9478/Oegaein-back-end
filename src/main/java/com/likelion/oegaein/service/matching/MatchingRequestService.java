@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +26,7 @@ public class MatchingRequestService {
     private final int PERCENTAGE_VALUE = 100;
 
     public FindMatchingReqsResponse findByParticipantMatchingRequest(Long participantId){
-        Member participant = memberRepository.findById(participantId);
+        Optional<Member> participant = memberRepository.findById(participantId);
         List<MatchingRequest> matchingRequests = matchingRequestRepository.findByParticipant(participant);
         List<FindMatchingReqData> matchingReqsData = new ArrayList<>();
         for(MatchingRequest matchingRequest : matchingRequests){

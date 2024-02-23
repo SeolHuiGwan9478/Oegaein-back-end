@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
 @Transactional
-public abstract class BaseTime {
-    @Column(updatable = false)
+public class BaseTime {
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
