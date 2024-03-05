@@ -1,7 +1,6 @@
 package com.likelion.oegaein.domain.matching.controller;
 
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
-import com.likelion.oegaein.dto.matching.matchingpost.*;
 import com.likelion.oegaein.domain.matching.service.MatchingPostService;
 import com.likelion.oegaein.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

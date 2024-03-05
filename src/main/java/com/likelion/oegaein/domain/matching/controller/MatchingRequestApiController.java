@@ -1,8 +1,8 @@
 package com.likelion.oegaein.domain.matching.controller;
 
 import com.likelion.oegaein.domain.matching.dto.matchingrequest.*;
-import com.likelion.oegaein.dto.global.ResponseDto;
 import com.likelion.oegaein.domain.matching.service.MatchingRequestService;
+import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

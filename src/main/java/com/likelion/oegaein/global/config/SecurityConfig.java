@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable).disable())
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/h2-console/**").permitAll();
+                    request.requestMatchers("/api/v1/**").permitAll();
                 })
                 .formLogin(AbstractHttpConfigurer::disable)
                 .build();

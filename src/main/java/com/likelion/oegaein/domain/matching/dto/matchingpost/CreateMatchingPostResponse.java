@@ -1,6 +1,6 @@
 package com.likelion.oegaein.domain.matching.dto.matchingpost;
 
-import com.likelion.oegaein.dto.global.ResponseDto;
+import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

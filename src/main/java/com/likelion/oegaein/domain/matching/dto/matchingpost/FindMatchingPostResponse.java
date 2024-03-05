@@ -3,7 +3,7 @@ package com.likelion.oegaein.domain.matching.dto.matchingpost;
 import com.likelion.oegaein.domain.matching.entity.DongType;
 import com.likelion.oegaein.domain.matching.entity.MatchingStatus;
 import com.likelion.oegaein.domain.matching.entity.RoomSizeType;
-import com.likelion.oegaein.dto.global.ResponseDto;
+import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
