@@ -48,14 +48,10 @@ public class GoogleLoginService {
     public String access(String authCode) {
         // 토큰 생성
         GoogleResponseDto jwtToken = requestAccessToken(authCode);
-        log.info("jwtToken: " + jwtToken);
+        log.info("jwtToken: " + jwtToken.getAccessToken());
 
         // 사용자 정보 반환
-        Map<String, String> map = new HashMap<>();
-        map.put("id_token",jwtToken.getIdToken());
-        ResponseEntity<GoogleInfoDto> googleInfoEntity = restTemplate.postForEntity(resourceUri,
-                map, GoogleInfoDto.class);
-        GoogleInfoDto googleInfoDto = googleInfoEntity.getBody();
+        GoogleInfoDto googleInfoDto = requestGoogleInfo(jwtToken);
         assert googleInfoDto != null;
 
         // 외대 메일 검증
@@ -64,7 +60,7 @@ public class GoogleLoginService {
 
         // DB에 메일 없으면 가입 진행
         String email = googleInfoDto.getEmail();
-        if (memberService.findMemberByEmail(email).orElse(null) == null){
+        if (memberService.findMemberByEmail(email) == null){
             memberService.join(googleInfoDto, jwtToken);
             log.info("signup email: " + email);
         }
@@ -83,6 +79,18 @@ public class GoogleLoginService {
                 googleRequest, GoogleResponseDto.class);
         return googleResponseEntity.getBody();
     }
+
+    private GoogleInfoDto requestGoogleInfo(GoogleResponseDto token) {
+        Map<String, String> map = new HashMap<>();
+        map.put("id_token",token.getIdToken());
+        ResponseEntity<GoogleInfoDto> googleInfoEntity = restTemplate.postForEntity(resourceUri,
+                map, GoogleInfoDto.class);
+        return googleInfoEntity.getBody();
+    }
+
+//    private GoogleResponseDto getTokenByAccessToken(String accessToken) {
+//
+//    }
 
     private void isHufsEmail(String email) {
         if (email.endsWith("@hufs.ac.kr")) {

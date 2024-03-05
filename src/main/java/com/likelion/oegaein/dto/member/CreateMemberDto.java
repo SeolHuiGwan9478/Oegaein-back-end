@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MemberJoinDTO {
+public class CreateMemberDto {
     private String email;
     @JsonProperty("refresh_token")
     private String refreshToken;

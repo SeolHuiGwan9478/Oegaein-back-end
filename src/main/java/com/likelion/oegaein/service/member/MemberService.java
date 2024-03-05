@@ -4,7 +4,6 @@ import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.domain.member.Profile;
 import com.likelion.oegaein.dto.auth.GoogleInfoDto;
 import com.likelion.oegaein.dto.auth.GoogleResponseDto;
-import com.likelion.oegaein.dto.member.SetProfileDto;
 import com.likelion.oegaein.repository.member.MemberRepository;
 import com.likelion.oegaein.repository.member.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +23,19 @@ public class MemberService {
 
     // 회원 가입
     public void join(GoogleInfoDto googleInfo, GoogleResponseDto jwtToken) {
+        Profile profile = new Profile();
+        profileRepository.save(profile);
+
         Member member = Member.builder()
                 .email(googleInfo.getEmail())
                 .refreshToken(jwtToken.getRefreshToken())
+                .profile(profile)
                 .build();
         memberRepository.save(member);
     }
 
-    // 유효 닉네임 검사
-    private void isValidName(String name) {
-        Optional<Member> findMember = profileRepository.findByName(name);
-        if (findMember.isPresent()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-        }
-    }
-
     // 이메일로 사용자 반환
-    public Optional<Member> findMemberByEmail(String email) {
+    public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 }

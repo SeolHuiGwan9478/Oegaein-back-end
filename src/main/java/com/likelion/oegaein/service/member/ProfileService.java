@@ -2,7 +2,7 @@ package com.likelion.oegaein.service.member;
 
 import com.likelion.oegaein.domain.member.Member;
 import com.likelion.oegaein.domain.member.Profile;
-import com.likelion.oegaein.dto.member.SetProfileDto;
+import com.likelion.oegaein.dto.member.UpdateProfileDto;
 import com.likelion.oegaein.repository.member.MemberRepository;
 import com.likelion.oegaein.repository.member.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,12 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final MemberRepository memberRepository;
 
-    public void update(String email, SetProfileDto form) {
+    public void update(String email, UpdateProfileDto form) {
         // 사용자 찾기
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalStateException("Member is not present"));
-        Profile profile = profileRepository.findByMember(member);
+        Member member = memberRepository.findByEmail(email);
+
+        // 닉네임 중복 확인
+        isValidName(form.getName());
 
         // 내용 저장
         Profile newProfile = Profile.builder()
@@ -41,6 +43,14 @@ public class ProfileService {
                 .outing(form.getOuting())
                 .soundSensitivity(form.getSoundSensitivity())
                 .build();
-        profileRepository.save(profile);
+        profileRepository.save(newProfile);
+    }
+
+    // 유효 닉네임 검사
+    private void isValidName(String name) {
+        Optional<Profile> member = profileRepository.findByName(name);
+        if (member.isPresent()) {
+            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+        }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -17,14 +18,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
+                .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable).disable())
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/api/v1/**").permitAll();
-                    request.requestMatchers("/users")
-                            .hasAnyAuthority("USER", "ADMIN");
-                }).formLogin(Customizer.withDefaults()).build();
-
+                    request.requestMatchers("/h2-console/**").permitAll();
+                })
+                .formLogin(AbstractHttpConfigurer::disable)
+                .build();
     }
 
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class FindMatchingReqInPostData {
@@ -16,7 +17,7 @@ public class FindMatchingReqInPostData {
     private Dormitory dormitory;
     private Mbti mbti;
     private Smoking smoking;
-    private SleepingHabit sleepingHabit;
+    private List<SleepingHabit> sleepingHabit;
     private LifePattern lifePattern;
     private Outing outing;
     private CleaningCycle cleaningCycle;
@@ -39,7 +40,7 @@ public class FindMatchingReqInPostData {
         findMatchingReqInPostData.outing = profile.getOuting();
         findMatchingReqInPostData.cleaningCycle = profile.getCleaningCycle();
         findMatchingReqInPostData.soundSensitivity = profile.getSoundSensitivity();
-        findMatchingReqInPostData.introduce = profile.getIntroduce();
+        findMatchingReqInPostData.introduce = profile.getIntroduction();
         return findMatchingReqInPostData;
     }
 }
