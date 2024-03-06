@@ -82,5 +82,4 @@ public class MatchingPostApiController {
             return new ResponseEntity<>(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
     }
-
 }
