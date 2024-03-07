@@ -29,16 +29,7 @@ public class MatchingPostService {
         List<MatchingPost> matchingPosts = matchingPostRepository.findAll();
         // create matchingPostsData
         List<FindMatchingPostsData> matchingPostsData = matchingPosts.stream()
-                .map(matchingPost -> FindMatchingPostsData.builder()
-                        .title(matchingPost.getTitle())
-                        .restDay(
-                                Duration.between(LocalDateTime.now(), matchingPost.getDeadline()).toDays()
-                        )
-                        .dong(matchingPost.getDong())
-                        .roomSize(matchingPost.getRoomSize())
-                        .matchingStatus(matchingPost.getMatchingStatus())
-                        .build()
-                )
+                .map(FindMatchingPostsData::toFindMatchingPostsData)
                 .toList();
         return new FindMatchingPostsResponse(matchingPostsData);
     }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class MatchingPostApiController {
     private final MatchingPostService matchingPostService;
-    private final MemberService memberService;
 
     @GetMapping("/api/v1/matchingposts") // 전체 매칭 글 조회
     public ResponseEntity<FindMatchingPostsResponse> getMatchingPosts(){
