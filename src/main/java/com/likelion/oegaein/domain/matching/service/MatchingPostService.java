@@ -45,8 +45,8 @@ public class MatchingPostService {
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .deadline(dto.getDeadline())
-                .dong(dto.getDongType())
-                .roomSize(dto.getRoomSizeType())
+                .dongType(dto.getDongType())
+                .roomSizeType(dto.getRoomSizeType())
                 .matchingStatus(MatchingStatus.WAITING)
                 .author(author)
                 .build();

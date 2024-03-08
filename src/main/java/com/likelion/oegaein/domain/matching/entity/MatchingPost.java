@@ -28,9 +28,9 @@ public class MatchingPost {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private DongType dong; // 기숙사 동(* A,B,C,D,E)
+    private DongType dongType; // 기숙사 동(* A,B,C,D,E)
     @Enumerated(EnumType.STRING)
-    private RoomSizeType roomSize; // 기숙사 방 사이즈(* 2인실/4인실)
+    private RoomSizeType roomSizeType; // 기숙사 방 사이즈(* 2인실/4인실)
 
     private LocalDate deadline;
 
@@ -54,7 +54,7 @@ public class MatchingPost {
         title = dto.getTitle();
         content = dto.getContent();
         deadline = dto.getDeadline();
-        dong = dto.getDongType();
-        roomSize = dto.getRoomSizeType();
+        dongType = dto.getDongType();
+        roomSizeType = dto.getRoomSizeType();
     }
 }
