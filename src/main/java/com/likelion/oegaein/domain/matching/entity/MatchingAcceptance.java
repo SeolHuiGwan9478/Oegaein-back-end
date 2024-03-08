@@ -6,8 +6,9 @@ import lombok.Getter;
 
 @Getter
 public enum MatchingAcceptance {
-    ACCEPT("수락"),
-    REJECT("거절");
+    ACCEPT("매칭 수락"),
+    WAITING("매칭 대기"),
+    REJECT("매칭 거절");
 
     MatchingAcceptance(String value){
         this.value = value;

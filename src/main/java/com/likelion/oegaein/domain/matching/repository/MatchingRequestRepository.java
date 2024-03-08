@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MatchingRequestRepository extends JpaRepository<MatchingRequest, Long> {
-    List<MatchingRequest> findByParticipant(Optional<Member> participant);
+    List<MatchingRequest> findByParticipant(Member participant);
 }

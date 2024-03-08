@@ -18,7 +18,7 @@ public class MatchingRequestApiController {
     @GetMapping("/api/v1/my-matchingrequests")
     public ResponseEntity<FindMatchingReqsResponse> getMatchingRequests(){
         log.info("Request to get matching requests");
-        FindMatchingReqsResponse response = matchingRequestService.findByParticipantMatchingRequest(153L);
+        FindMatchingReqsResponse response = matchingRequestService.findMyMatchingRequest();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

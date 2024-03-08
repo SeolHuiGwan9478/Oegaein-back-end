@@ -82,7 +82,7 @@ public class MatchingPostService {
     // 내 매칭글 조회
     public FindMyMatchingPostResponse findMyMatchingPosts(){
         Member author = new Member(); // 임시 인증 유저
-        List<MatchingPost> findMatchingPosts = matchingPostQueryRepository.findByMember(author);
+        List<MatchingPost> findMatchingPosts = matchingPostRepository.findByAuthor(author);
         List<FindMyMatchingPostData> findMyMatchingPostData = findMatchingPosts.stream()
                 .map(FindMyMatchingPostData::toFindMyMatchingPostData
                 ).toList();

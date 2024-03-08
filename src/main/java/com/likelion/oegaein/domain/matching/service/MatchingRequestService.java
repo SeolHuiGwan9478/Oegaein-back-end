@@ -25,8 +25,11 @@ public class MatchingRequestService {
 
     private final int PERCENTAGE_VALUE = 100;
 
-    public FindMatchingReqsResponse findByParticipantMatchingRequest(Long participantId){
-        Optional<Member> participant = memberRepository.findById(participantId);
+    public FindMatchingReqsResponse findMyMatchingRequest(){
+        Long participantId = 153L; // 임시 ID
+        Member participant = memberRepository.findById(participantId) // 인증 유저 조회
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: Participant"));
+        // 내 매칭 요청 목록 조회
         List<MatchingRequest> matchingRequests = matchingRequestRepository.findByParticipant(participant);
         List<FindMatchingReqData> matchingReqsData = new ArrayList<>();
         for(MatchingRequest matchingRequest : matchingRequests){
@@ -52,7 +55,7 @@ public class MatchingRequestService {
         MatchingPost findMatchingPost = matchingPostRepository.findById(dto.getMatchingPostId())
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + dto.getMatchingPostId()));
         // find participant
-        Member findParticipant = new Member(); // 임시 생성자
+        Member findParticipant = new Member(); // 임시 로그인 유저
         MatchingRequest newMatchingRequest = new MatchingRequest(findMatchingPost, findParticipant);
         matchingRequestRepository.save(newMatchingRequest);
         return new CreateMatchingReqResponse(newMatchingRequest.getId());

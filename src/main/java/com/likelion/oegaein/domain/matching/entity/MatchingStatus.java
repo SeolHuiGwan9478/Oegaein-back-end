@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum MatchingStatus {
     WAITING("매칭 대기"),
     COMPLETED("매칭 완료"),
-    FAILED("매칭 마감");
+    EXPIRED("매칭 마감");
 
     MatchingStatus(String value){
         this.value = value;

@@ -21,12 +21,13 @@ public class MatchingRequest {
     private Member participant;
 
     @Enumerated(EnumType.STRING)
-    private MatchingAcceptance matchingAcceptance; // 매칭 수락 여부 : 수락/거부
+    private MatchingAcceptance matchingAcceptance; // 매칭 수락 여부 : 수락/대기/거부
 
     protected MatchingRequest(){}
     public MatchingRequest(MatchingPost matchingPost, Member participant){
         this.matchingPost = matchingPost;
         this.participant = participant;
+        this.matchingAcceptance = MatchingAcceptance.WAITING;
     }
 
     public void acceptMatchingRequest(){
