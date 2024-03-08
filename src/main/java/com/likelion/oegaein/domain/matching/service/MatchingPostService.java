@@ -52,23 +52,14 @@ public class MatchingPostService {
                 .build();
         // persist entity
         matchingPostRepository.save(newMatchingPost);
-        Long newMatchingPostId = newMatchingPost.getId();
-        return new CreateMatchingPostResponse(newMatchingPostId);
+        return new CreateMatchingPostResponse(newMatchingPost.getId());
     }
 
     // 특정 매칭글 조회(ID)
     public FindMatchingPostResponse findByIdMatchingPost(Long matchingPostId){
         MatchingPost matchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingPostId));
-        return FindMatchingPostResponse.builder()
-                .title(matchingPost.getTitle())
-                .content(matchingPost.getContent())
-                .dong(matchingPost.getDong())
-                .roomSize(matchingPost.getRoomSize())
-                .deadline(matchingPost.getDeadline())
-                .createdAt(matchingPost.getCreatedAt())
-                .matchingStatus(matchingPost.getMatchingStatus())
-                .build();
+        return FindMatchingPostResponse.toFindMatchingPostResponse(matchingPost);
     }
 
     // 특정 매칭글 삭제
@@ -81,11 +72,11 @@ public class MatchingPostService {
 
     // 매칭글 수정
     @Transactional
-    public Long updateMatchingPost(Long matchingPostId, UpdateMatchingPostData dto){
+    public UpdateMatchingPostResponse updateMatchingPost(Long matchingPostId, UpdateMatchingPostData dto){
         MatchingPost matchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingPostId));
         matchingPost.updateMatchingPost(dto); // dirty checking
-        return matchingPostId;
+        return new UpdateMatchingPostResponse(matchingPostId);
     }
 
     // 내 매칭글 조회

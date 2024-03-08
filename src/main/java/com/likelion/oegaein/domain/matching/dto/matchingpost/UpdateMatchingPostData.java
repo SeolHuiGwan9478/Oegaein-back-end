@@ -15,4 +15,14 @@ public class UpdateMatchingPostData {
     private LocalDate deadline;
     private DongType dongType;
     private RoomSizeType roomSizeType;
+
+    public static UpdateMatchingPostData toUpdateMatchingPostData(UpdateMatchingPostRequest dto){
+        return UpdateMatchingPostData.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .deadline(dto.getDeadline())
+                .dongType(dto.getDongType())
+                .roomSizeType(dto.getRoomSizeType())
+                .build();
+    }
 }

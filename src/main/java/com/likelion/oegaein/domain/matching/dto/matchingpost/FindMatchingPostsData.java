@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class FindMatchingPostsData {
-    private int roomMateRate; // rate
+    private int star; // rate
     private String major; // major
     private String studentNo; // studentNo
     private String name; // name
@@ -23,10 +23,12 @@ public class FindMatchingPostsData {
     private DongType dong; // dorm dong
     private RoomSizeType roomSize; // dorm roomSize
     private MatchingStatus matchingStatus; // matching status
+    private LocalDateTime createdAt;
 
     public static FindMatchingPostsData toFindMatchingPostsData(MatchingPost matchingPost){
         Profile profile = matchingPost.getAuthor().getProfile();
         return FindMatchingPostsData.builder()
+                .star(profile.getStar())
                 .major(profile.getMajor())
                 //.studentNo(profile.getStudentNo())
                 .name(profile.getName())
@@ -35,6 +37,7 @@ public class FindMatchingPostsData {
                 .dong(matchingPost.getDong())
                 .roomSize(matchingPost.getRoomSize())
                 .matchingStatus(matchingPost.getMatchingStatus())
+                .createdAt(matchingPost.getCreatedAt())
                 .build();
     }
 }

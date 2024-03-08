@@ -1,8 +1,10 @@
 package com.likelion.oegaein.domain.matching.dto.matchingpost;
 
 import com.likelion.oegaein.domain.matching.entity.DongType;
+import com.likelion.oegaein.domain.matching.entity.MatchingPost;
 import com.likelion.oegaein.domain.matching.entity.MatchingStatus;
 import com.likelion.oegaein.domain.matching.entity.RoomSizeType;
+import com.likelion.oegaein.domain.member.entity.Profile;
 import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,20 @@ public class FindMatchingPostResponse implements ResponseDto {
     private LocalDate deadline; // 마감일
     private LocalDateTime createdAt; // 생성일
     private MatchingStatus matchingStatus; // 매칭 상태
-    // private Long progressRate;
-    // private Member author;
+    private FindMatchingPostResInProfile authorProfile; // 작성자 프로필
+
+    public static FindMatchingPostResponse toFindMatchingPostResponse(MatchingPost matchingPost){
+        Profile profile = matchingPost.getAuthor().getProfile();
+        FindMatchingPostResInProfile authorProfile = FindMatchingPostResInProfile.toFindMatchingPostResInProfile(profile);
+        return FindMatchingPostResponse.builder()
+                .title(matchingPost.getTitle())
+                .content(matchingPost.getContent())
+                .dong(matchingPost.getDong())
+                .roomSize(matchingPost.getRoomSize())
+                .deadline(matchingPost.getDeadline())
+                .createdAt(matchingPost.getCreatedAt())
+                .matchingStatus(matchingPost.getMatchingStatus())
+                .authorProfile(authorProfile)
+                .build();
+    }
 }
