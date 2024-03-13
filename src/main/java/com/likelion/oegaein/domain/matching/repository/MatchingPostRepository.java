@@ -9,5 +9,4 @@ import java.util.List;
 
 public interface MatchingPostRepository extends JpaRepository<MatchingPost, Long> {
     List<MatchingPost> findByAuthor(Member author);
-    List<MatchingPost> findByDeadlineBetween(LocalDate fromDate, LocalDate toDate);
 }

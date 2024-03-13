@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -30,6 +31,20 @@ public class MatchingPostQueryRepository {
                 " order by mpap.rate desc";
         return em.createQuery(jpql, MatchingPost.class)
                 .setParameter("standardRate", STANDARD_RATE)
+                .setFirstResult(0)
+                .setMaxResults(20)
+                .getResultList();
+    }
+
+    public List<MatchingPost> findMatchingPostsBetweenTwoDates(LocalDate fromDate, LocalDate toDate){
+        String jpql = "select mp from MatchingPost mp" +
+                " join fetch mp.author mpa" +
+                " join fetch mpa.profile mpap" +
+                " where mp.deadline between :fromDate and :toDate" +
+                " order by mp.createdAt asc";
+        return em.createQuery(jpql, MatchingPost.class)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
                 .setFirstResult(0)
                 .setMaxResults(20)
                 .getResultList();
