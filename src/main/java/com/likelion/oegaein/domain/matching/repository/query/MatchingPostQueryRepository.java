@@ -26,9 +26,12 @@ public class MatchingPostQueryRepository {
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
-                " where mpap.rate >= :standardRate";
+                " where mpap.rate >= :standardRate" +
+                " order by mpap.rate desc";
         return em.createQuery(jpql, MatchingPost.class)
                 .setParameter("standardRate", STANDARD_RATE)
+                .setFirstResult(0)
+                .setMaxResults(20)
                 .getResultList();
     }
 }

@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -92,11 +91,24 @@ public class MatchingPostService {
     }
 
     // 베스트 룸메이트 매칭글 조회
-    public FindBestRoomMateMatchingPostResponse findBestRoomMateMatchingPosts(){
+    public FindBestRoomMateMatchingPostsResponse findBestRoomMateMatchingPosts(){
         List<MatchingPost> findMatchingPosts = matchingPostQueryRepository.findBestRoomMateMatchingPosts();
-        List<FindBestRoomMateMatchingPostData> bestRoomMateMatchingPostDatas = findMatchingPosts.stream()
-                .map(FindBestRoomMateMatchingPostData::toFindBestRoomMateMatchingPostData)
+        List<FindBestRoomMateMatchingPostsData> bestRoomMateMatchingPostsData = findMatchingPosts.stream()
+                .map(FindBestRoomMateMatchingPostsData::toFindBestRoomMateMatchingPostData)
                 .toList();
-        return new FindBestRoomMateMatchingPostResponse(bestRoomMateMatchingPostDatas);
+        return new FindBestRoomMateMatchingPostsResponse(bestRoomMateMatchingPostsData);
+    }
+
+    public FindDeadlineImminentMatchingPostsResponse findDeadlineImminentMatchingPosts(){
+        LocalDate currentDate = LocalDate.now();
+        LocalDate beforeOneDayDate = LocalDate.now().minusDays(1);
+        List<MatchingPost> findMatchingPosts = matchingPostRepository.findByDeadlineBetween(
+                beforeOneDayDate,
+                currentDate
+        );
+        List<FindDeadlineImminentMatchingPostsData> deadlineImminentMatchingPostsData = findMatchingPosts.stream()
+                .map(FindDeadlineImminentMatchingPostsData::toFindDeadlineImminentMatchingPostsData)
+                .toList();
+        return new FindDeadlineImminentMatchingPostsResponse(deadlineImminentMatchingPostsData);
     }
 }

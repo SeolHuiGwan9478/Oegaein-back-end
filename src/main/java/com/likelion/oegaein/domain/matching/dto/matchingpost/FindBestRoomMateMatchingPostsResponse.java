@@ -8,6 +8,6 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class FindBestRoomMateMatchingPostResponse implements ResponseDto {
-    private List<FindBestRoomMateMatchingPostData> data;
+public class FindBestRoomMateMatchingPostsResponse implements ResponseDto {
+    private List<FindBestRoomMateMatchingPostsData> data;
 }
