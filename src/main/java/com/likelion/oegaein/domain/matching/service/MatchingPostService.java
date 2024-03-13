@@ -102,7 +102,7 @@ public class MatchingPostService {
     public FindDeadlineImminentMatchingPostsResponse findDeadlineImminentMatchingPosts(){
         LocalDate currentDate = LocalDate.now();
         LocalDate beforeOneDayDate = LocalDate.now().minusDays(1);
-        List<MatchingPost> findMatchingPosts = matchingPostRepository.findByDeadlineBetween(
+        List<MatchingPost> findMatchingPosts = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
                 beforeOneDayDate,
                 currentDate
         );
