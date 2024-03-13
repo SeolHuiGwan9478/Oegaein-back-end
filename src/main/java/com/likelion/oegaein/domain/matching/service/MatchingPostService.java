@@ -90,4 +90,13 @@ public class MatchingPostService {
                 .data(findMyMatchingPostData)
                 .build();
     }
+
+    // 베스트 룸메이트 매칭글 조회
+    public FindBestRoomMateMatchingPostResponse findBestRoomMateMatchingPosts(){
+        List<MatchingPost> findMatchingPosts = matchingPostQueryRepository.findBestRoomMateMatchingPosts();
+        List<FindBestRoomMateMatchingPostData> bestRoomMateMatchingPostDatas = findMatchingPosts.stream()
+                .map(FindBestRoomMateMatchingPostData::toFindBestRoomMateMatchingPostData)
+                .toList();
+        return new FindBestRoomMateMatchingPostResponse(bestRoomMateMatchingPostDatas);
+    }
 }

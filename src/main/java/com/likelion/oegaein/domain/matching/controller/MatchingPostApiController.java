@@ -46,7 +46,7 @@ public class MatchingPostApiController {
     }
 
     @PutMapping("/api/v1/matchingposts/{matchingpostid}")
-    public ResponseEntity<UpdateMatchingPostResponse> putMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
+    public ResponseEntity<ResponseDto> putMatchingPost(@PathVariable("matchingpostid") Long matchingPostId,
                                                   @RequestBody UpdateMatchingPostRequest dto){
         UpdateMatchingPostData convertedDto = UpdateMatchingPostData.toUpdateMatchingPostData(dto);
         UpdateMatchingPostResponse response = matchingPostService.updateMatchingPost(matchingPostId, convertedDto);
@@ -54,9 +54,16 @@ public class MatchingPostApiController {
     }
 
     @GetMapping("/api/v1/my-matchingposts")
-    public ResponseEntity<FindMyMatchingPostResponse> getMyMatchingPosts(){
+    public ResponseEntity<ResponseDto> getMyMatchingPosts(){
         log.info("Request to get my matching posts");
         FindMyMatchingPostResponse response = matchingPostService.findMyMatchingPosts();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/v1/best-roommate-matchingposts")
+    public ResponseEntity<ResponseDto> getBestRoomMateMatchingPosts(){
+        log.info("Request to get best-roommate matching posts");
+        FindBestRoomMateMatchingPostResponse response = matchingPostService.findBestRoomMateMatchingPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
