@@ -15,15 +15,22 @@ import org.springframework.web.bind.annotation.*;
 public class MatchingRequestApiController {
     private final MatchingRequestService matchingRequestService;
 
-    @GetMapping("/api/v1/my-matchingrequests")
-    public ResponseEntity<FindMatchingReqsResponse> getMatchingRequests(){
-        log.info("Request to get matching requests");
-        FindMatchingReqsResponse response = matchingRequestService.findMyMatchingRequest();
+    @GetMapping("/api/v1/my-matchingrequests") // 내가 신청한 매칭 신청 목록
+    public ResponseEntity<ResponseDto> getMyMatchingRequests(){
+        log.info("Request to get my matching requests");
+        FindMyMatchingReqsResponse response = matchingRequestService.findMyMatchingRequest();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/v1/come-matchingrequests") // 나에게 온 매칭 신청 목록
+    public ResponseEntity<ResponseDto> getComeMatchingRequests(){
+        log.info("Request to get come matching requests");
+        FindComeMatchingReqsResponse response = matchingRequestService.findComeMatchingRequest();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/api/v1/matchingrequests") // 매칭 신청 등록
-    public ResponseEntity<CreateMatchingReqResponse> postMatchingRequest(@RequestBody CreateMatchingReqRequest dto){
+    public ResponseEntity<ResponseDto> postMatchingRequest(@RequestBody CreateMatchingReqRequest dto){
         log.info("Request to post matching request");
         CreateMatchingReqData convertedDto = CreateMatchingReqData.toCreateMatchingReqData(dto);
         CreateMatchingReqResponse response = matchingRequestService.createMatchingRequest(convertedDto);
@@ -31,7 +38,7 @@ public class MatchingRequestApiController {
     }
 
     @DeleteMapping("/api/v1/matchingrequests/{matchingrequestid}") // 매칭 신청 취소
-    public ResponseEntity<Void> deleteMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
+    public ResponseEntity<ResponseDto> deleteMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
         log.info("Request to delete matching request");
         matchingRequestService.removeMatchingRequest(matchingRequestId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

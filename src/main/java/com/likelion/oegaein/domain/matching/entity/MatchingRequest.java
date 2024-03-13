@@ -4,6 +4,10 @@ import com.likelion.oegaein.domain.member.entity.Member;
 import com.likelion.oegaein.domain.matching.exception.MatchingRequestException;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,6 +26,12 @@ public class MatchingRequest {
 
     @Enumerated(EnumType.STRING)
     private MatchingAcceptance matchingAcceptance; // 매칭 수락 여부 : 수락/대기/거부
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     protected MatchingRequest(){}
     public MatchingRequest(MatchingPost matchingPost, Member participant){
