@@ -2,7 +2,6 @@ package com.likelion.oegaein.domain.matching.controller;
 
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
 import com.likelion.oegaein.domain.matching.service.MatchingPostService;
-import com.likelion.oegaein.domain.member.service.MemberService;
 import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,14 @@ public class MatchingPostApiController {
     @GetMapping("/api/v1/best-roommate-matchingposts")
     public ResponseEntity<ResponseDto> getBestRoomMateMatchingPosts(){
         log.info("Request to get best-roommate matching posts");
-        FindBestRoomMateMatchingPostResponse response = matchingPostService.findBestRoomMateMatchingPosts();
+        FindBestRoomMateMatchingPostsResponse response = matchingPostService.findBestRoomMateMatchingPosts();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/v1/deadline-imminent-matchingposts")
+    public ResponseEntity<ResponseDto> getDeadlineImminentMatchingPosts(){
+        log.info("Request to get deadline-imminent matching posts");
+        FindDeadlineImminentMatchingPostsResponse response = matchingPostService.findDeadlineImminentMatchingPosts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class FindBestRoomMateMatchingPostData {
+public class FindDeadlineImminentMatchingPostsData {
     private int star; // rate
     private String major; // major
     private String studentNo; // studentNo
@@ -26,9 +26,9 @@ public class FindBestRoomMateMatchingPostData {
     private MatchingStatus matchingStatus; // matching status
     private LocalDateTime createdAt;
 
-    public static FindBestRoomMateMatchingPostData toFindBestRoomMateMatchingPostData(MatchingPost matchingPost){
+    public static FindDeadlineImminentMatchingPostsData toFindDeadlineImminentMatchingPostsData(MatchingPost matchingPost){
         Profile profile = matchingPost.getAuthor().getProfile();
-        return FindBestRoomMateMatchingPostData.builder()
+        return FindDeadlineImminentMatchingPostsData.builder()
                 .star(profile.getStar())
                 .major(profile.getMajor())
                 //.studentNo(profile.getStudentNo())
