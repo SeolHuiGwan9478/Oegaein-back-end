@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AcceptMatchingReqResponse implements ResponseDto {
-    private Long matchingRequestId; // 매칭 요청 ID
+public class CompletedMatchingResponse implements ResponseDto {
+    private String chatRoomNo; // 채팅방 번호
 }

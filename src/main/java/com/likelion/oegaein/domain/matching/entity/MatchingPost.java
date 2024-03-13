@@ -42,7 +42,7 @@ public class MatchingPost {
     @Enumerated(EnumType.STRING)
     private MatchingStatus matchingStatus; // 매칭 상태, WAITING, COMPLETED
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // 변경 필요
     @JoinColumn(name = "user_id")
     private Member author;
 
@@ -56,5 +56,9 @@ public class MatchingPost {
         deadline = dto.getDeadline();
         dongType = dto.getDongType();
         roomSizeType = dto.getRoomSizeType();
+    }
+
+    public void completeMatchingPost(){
+        this.matchingStatus = MatchingStatus.COMPLETED;
     }
 }

@@ -41,16 +41,16 @@ public class MatchingRequest {
     }
 
     public void acceptMatchingRequest(){
-        if(this.matchingAcceptance.equals(MatchingAcceptance.ACCEPT)){
-            throw new MatchingRequestException("이미 수락된 매칭 요청입니다.");
-        }
         this.matchingAcceptance = MatchingAcceptance.ACCEPT;
     }
 
     public void rejectMatchingRequest(){
-        if(this.matchingAcceptance.equals(MatchingAcceptance.REJECT)){
-            throw new MatchingRequestException("이미 거부된 매칭 요청입니다.");
-        }
         this.matchingAcceptance = MatchingAcceptance.REJECT;
+    }
+
+    public void failedMatchingRequest(){
+        if(this.matchingAcceptance.equals(MatchingAcceptance.WAITING)){
+            this.matchingAcceptance = MatchingAcceptance.REJECT;
+        }
     }
 }

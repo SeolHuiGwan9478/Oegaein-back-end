@@ -34,8 +34,8 @@ public class FindMatchingPostsData {
                 .name(profile.getName())
                 .title(matchingPost.getTitle())
                 .dDay(Duration.between(LocalDateTime.now(), matchingPost.getDeadline()).toDays())
-                .dong(matchingPost.getDong())
-                .roomSize(matchingPost.getRoomSize())
+                .dong(matchingPost.getDongType())
+                .roomSize(matchingPost.getRoomSizeType())
                 .matchingStatus(matchingPost.getMatchingStatus())
                 .createdAt(matchingPost.getCreatedAt())
                 .build();

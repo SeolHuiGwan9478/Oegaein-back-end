@@ -44,14 +44,14 @@ public class MatchingRequestApiController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/api/v1/matchingrequest/{matchingrequestsid}/accept")
+    @PatchMapping("/api/v1/matchingrequests/{matchingrequestid}/accept")
     public ResponseEntity<ResponseDto> acceptMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
         log.info("Request to accept matching request");
-        AcceptMatchingReqResponse response = matchingRequestService.acceptMatchingRequest(matchingRequestId);
+        ResponseDto response = matchingRequestService.acceptMatchingRequest(matchingRequestId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PatchMapping("/api/v1/matchingrequest/{matchingrequestsid}/reject")
+    @PatchMapping("/api/v1/matchingrequests/{matchingrequestid}/reject")
     public ResponseEntity<ResponseDto> rejectMatchingRequest(@PathVariable("matchingrequestid") Long matchingRequestId){
         log.info("Request to accept matching request");
         RejectMatchingReqResponse response = matchingRequestService.rejectMatchingRequest(matchingRequestId);

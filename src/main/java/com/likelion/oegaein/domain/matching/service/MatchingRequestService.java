@@ -8,11 +8,13 @@ import com.likelion.oegaein.domain.member.entity.Member;
 import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
 import com.likelion.oegaein.domain.matching.repository.MatchingRequestRepository;
 import com.likelion.oegaein.domain.member.repository.MemberRepository;
+import com.likelion.oegaein.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,7 +52,8 @@ public class MatchingRequestService {
         MatchingPost findMatchingPost = matchingPostRepository.findById(dto.getMatchingPostId())
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + dto.getMatchingPostId()));
         // find participant
-        Member findParticipant = new Member(); // 임시 로그인 유저
+        Member findParticipant = memberRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("Not Found: Participant"));
         MatchingRequest newMatchingRequest = new MatchingRequest(findMatchingPost, findParticipant);
         matchingRequestRepository.save(newMatchingRequest);
         return new CreateMatchingReqResponse(newMatchingRequest.getId());
@@ -64,16 +67,28 @@ public class MatchingRequestService {
     }
 
     @Transactional
-    public AcceptMatchingReqResponse acceptMatchingRequest(Long matchingRequestId){
+    public ResponseDto acceptMatchingRequest(Long matchingRequestId){
         MatchingRequest matchingRequest = matchingRequestRepository.findById(matchingRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found: " + matchingRequestId));
+        MatchingPost matchingPost = matchingRequest.getMatchingPost();
         // change matchingAcceptance
         matchingRequest.acceptMatchingRequest();
-        // return matchingReqResponse
-        return new AcceptMatchingReqResponse(
-                matchingRequest.getId(),
-                1L // 임시 채팅방 번호
-        );
+        // check matching is completed
+        if(isCompletedMatching(matchingPost)){
+            // change other requests of status
+            List<MatchingRequest> matchingRequests = matchingPost.getMatchingRequests();
+            matchingRequests.forEach(MatchingRequest::failedMatchingRequest);
+            // change matchingPost of status
+            matchingPost.completeMatchingPost();
+            // generate uuid
+            String chatRoomNo = UUID.randomUUID().toString();
+            // return matchingReqResponse
+            return new CompletedMatchingResponse(
+                    chatRoomNo
+            );
+        }
+        // not completed matching
+        return new AcceptMatchingReqResponse(matchingRequestId);
     }
 
     @Transactional
@@ -86,5 +101,13 @@ public class MatchingRequestService {
         return new RejectMatchingReqResponse(
                 matchingRequest.getId()
         );
+    }
+
+    // 사용자 정의 메서드
+    private Boolean isCompletedMatching(MatchingPost matchingPost){
+        int roomSizeNum = matchingPost.getRoomSizeType().getValueNum();
+        int completedMatchingRequest = matchingRequestQueryRepository
+                .countCompletedMatchingRequest(matchingPost);
+        return roomSizeNum == (completedMatchingRequest+1);
     }
 }
