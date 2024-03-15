@@ -38,3 +38,6 @@ out/
 
 ### Project ###
 src/main/resources/application.yaml
+
+chromedriver
+LICENSE.chromedriver
