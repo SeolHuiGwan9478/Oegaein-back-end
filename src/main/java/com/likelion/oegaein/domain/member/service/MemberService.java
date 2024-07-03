@@ -14,6 +14,7 @@ import com.likelion.oegaein.domain.member.repository.LikeRepository;
 import com.likelion.oegaein.domain.member.repository.MemberRepository;
 import com.likelion.oegaein.domain.member.util.GoogleOauthUtil;
 import com.likelion.oegaein.domain.member.util.JwtUtil;
+import com.likelion.oegaein.domain.member.validation.LikeValidator;
 import com.likelion.oegaein.domain.member.validation.MemberValidator;
 import com.likelion.oegaein.domain.member.validation.RefreshTokenValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +47,7 @@ public class MemberService {
     private final RefreshTokenValidator refreshTokenValidator;
     private final BlockRepository blockRepository;
     private final LikeRepository likeRepository;
+    private final LikeValidator likeValidator;
 
     @Transactional
     public GoogleOauthLoginResponse googleLogin(String code) throws JsonProcessingException {
@@ -103,6 +105,7 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("Not Found Member: " + authentication.getName()));
         Member receiver = memberRepository.findById(form.getReceiverId())
                 .orElseThrow(() -> new EntityNotFoundException("Not Found Member: " + form.getReceiverId()));
+        likeValidator.validateLiked(sender, receiver);
         Likey likey = Likey.builder()
                 .sender(sender)
                 .receiver(receiver)

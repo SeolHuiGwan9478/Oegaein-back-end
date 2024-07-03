@@ -3,27 +3,24 @@ package com.likelion.oegaein.domain.matching.service;
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
 import com.likelion.oegaein.domain.matching.entity.MatchingStatus;
+import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
+import com.likelion.oegaein.domain.matching.repository.query.MatchingPostQueryRepository;
 import com.likelion.oegaein.domain.matching.validation.MatchingPostValidator;
 import com.likelion.oegaein.domain.member.entity.member.Block;
 import com.likelion.oegaein.domain.member.entity.member.Member;
-import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
-import com.likelion.oegaein.domain.matching.repository.query.MatchingPostQueryRepository;
 import com.likelion.oegaein.domain.member.repository.BlockRepository;
 import com.likelion.oegaein.domain.member.repository.MemberRepository;
 import com.likelion.oegaein.domain.member.validation.BlockValidator;
 import com.likelion.oegaein.domain.member.validation.MemberValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -84,7 +81,7 @@ public class MatchingPostService {
     @Transactional
     public CreateMatchingPostResponse saveMatchingPost(Authentication authentication, CreateMatchingPostData dto){
         matchingPostValidator.validateRoomSizeAndTargetNumOfPeople(dto.getRoomSizeType(), dto.getTargetNumberOfPeople());
-         Member author = memberRepository.findByEmail(authentication.getName())
+        Member author = memberRepository.findByEmail(authentication.getName())
                  .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
         // Create MatchingPost Entity
         MatchingPost newMatchingPost = MatchingPost.builder()
