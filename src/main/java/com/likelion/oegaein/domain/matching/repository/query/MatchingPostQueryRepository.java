@@ -29,29 +29,56 @@ public class MatchingPostQueryRepository {
         return em.createQuery(jpql, MatchingPost.class).getResultList();
     } // matching request fetch join
 
-    public List<MatchingPost> findBestRoomMateMatchingPosts(){
+    public Page<MatchingPost> findBestRoomMateMatchingPosts(Pageable pageable){
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
                 " where mpap.score >= :standardRate" +
                 " order by mpap.score desc";
-        return em.createQuery(jpql, MatchingPost.class)
+        TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("standardRate", STANDARD_RATE)
-                .getResultList();
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize());
+        // Get the paginated results
+        List<MatchingPost> matchingPosts = query.getResultList();
+
+        // Create count query to get the total number of results
+        String countJpql = "select count(mp) from MatchingPost mp" +
+                " join fetch mp.author mpa" +
+                " where mpap.score >= :standardRate";
+        Long total = em.createQuery(countJpql, Long.class)
+                .setParameter("standardRate", STANDARD_RATE)
+                .getSingleResult();
+        return new PageImpl<>(matchingPosts, pageable, total);
     }
 
-    public List<MatchingPost> findMatchingPostsBetweenTwoDates(LocalDate fromDate, LocalDate toDate){
+    public Page<MatchingPost> findMatchingPostsBetweenTwoDates(LocalDate fromDate, LocalDate toDate, Pageable pageable){
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
                 " where mp.deadline between :fromDate and :toDate" +
                 " and mp.matchingStatus = :matchingPostStatus" +
                 " order by mp.createdAt asc";
-        return em.createQuery(jpql, MatchingPost.class)
+        TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)
                 .setParameter("matchingPostStatus", MatchingStatus.WAITING)
-                .getResultList();
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize());
+        // Get the paginated results
+        List<MatchingPost> matchingPosts = query.getResultList();
+
+        // Create count query to get the total number of results
+        String countJpql = "select count(mp) from MatchingPost mp" +
+                " join fetch mp.author mpa" +
+                " where mp.deadline between :fromDate and :toDate" +
+                " and mp.matchingStatus = :matchingPostStatus";
+        Long total = em.createQuery(countJpql, Long.class)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
+                .setParameter("matchingPostStatus", MatchingStatus.WAITING)
+                .getSingleResult();
+        return new PageImpl<>(matchingPosts, pageable, total);
     }
 
     public List<MatchingPost> searchMatchingPost(String content){
@@ -94,20 +121,35 @@ public class MatchingPostQueryRepository {
         return new PageImpl<>(matchingPosts, pageable, total);
     }
 
-    public List<MatchingPost> findBestRoomMateMatchingPostsExceptBlockedMember(List<Long> blockedMemberIds){
+    public Page<MatchingPost> findBestRoomMateMatchingPostsExceptBlockedMember(List<Long> blockedMemberIds, Pageable pageable){
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
                 " where mpap.score >= :standardRate" +
-                " and mpa.id not in :blockedmemberids" +
+                " and mpa.id not in :blockedMemberIds" +
                 " order by mpap.score desc";
-        return em.createQuery(jpql, MatchingPost.class)
+        TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("standardRate", STANDARD_RATE)
-                .setParameter("blockedmemberids", blockedMemberIds)
-                .getResultList();
+                .setParameter("blockedMemberIds", blockedMemberIds)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize());
+
+        // Get the paginated results
+        List<MatchingPost> matchingPosts = query.getResultList();
+
+        // Create count query to get the total number of results
+        String countJpql = "select count(mp) from MatchingPost mp" +
+                " join fetch mp.author mpa" +
+                " where mpap.score >= :standardRate" +
+                " and mpa.id not in :blockedMemberIds";
+        Long total = em.createQuery(countJpql, Long.class)
+                .setParameter("standardRate", STANDARD_RATE)
+                .setParameter("blockedMemberIds", blockedMemberIds)
+                .getSingleResult();
+        return new PageImpl<>(matchingPosts, pageable, total);
     }
 
-    public List<MatchingPost> findMatchingPostsBetweenTwoDatesExceptBlockedMember(LocalDate fromDate, LocalDate toDate, List<Long> blockedMemberIds){
+    public Page<MatchingPost> findMatchingPostsBetweenTwoDatesExceptBlockedMember(LocalDate fromDate, LocalDate toDate, List<Long> blockedMemberIds, Pageable pageable){
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
@@ -115,12 +157,27 @@ public class MatchingPostQueryRepository {
                 " and mp.matchingStatus = :matchingPostStatus" +
                 " and mpa.id not in :blockedmemberids" +
                 " order by mp.createdAt asc";
-        return em.createQuery(jpql, MatchingPost.class)
+        TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
+                .setParameter("fromDate", fromDate)
+                .setParameter("toDate", toDate)
+                .setParameter("matchingPostStatus", MatchingStatus.WAITING)
+                .setParameter("blockedmemberids", blockedMemberIds);
+        // Get the paginated results
+        List<MatchingPost> matchingPosts = query.getResultList();
+
+        // Create count query to get the total number of results
+        String countJpql = "select count(mp) from MatchingPost mp" +
+                " join fetch mp.author mpa" +
+                " where mp.deadline between :fromDate and :toDate" +
+                " and mp.matchingStatus = :matchingPostStatus" +
+                " and mpa.id not in :blockedmemberids";
+        Long total = em.createQuery(countJpql, Long.class)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)
                 .setParameter("matchingPostStatus", MatchingStatus.WAITING)
                 .setParameter("blockedmemberids", blockedMemberIds)
-                .getResultList();
+                .getSingleResult();
+        return new PageImpl<>(matchingPosts, pageable, total);
     }
 
     public int updateExpiredMatchingPost(){

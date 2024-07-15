@@ -65,23 +65,23 @@ public class MatchingPostApiController {
     }
 
     @GetMapping("/api/v1/my-matchingposts")
-    public ResponseEntity<ResponseDto> getMyMatchingPosts(Authentication authentication){
+    public ResponseEntity<ResponseDto> getMyMatchingPosts(Authentication authentication, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         log.info("Request to get my matching posts");
-        FindMyMatchingPostResponse response = matchingPostService.findMyMatchingPosts(authentication);
+        FindMyMatchingPostResponse response = matchingPostService.findMyMatchingPosts(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/best-roommate-matchingposts")
-    public ResponseEntity<ResponseDto> getBestRoomMateMatchingPosts(Authentication authentication){
+    public ResponseEntity<ResponseDto> getBestRoomMateMatchingPosts(Authentication authentication, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         log.info("Request to get best-roommate matching posts");
-        FindBestRoomMateMatchingPostsResponse response = matchingPostService.findBestRoomMateMatchingPosts(authentication);
+        FindBestRoomMateMatchingPostsResponse response = matchingPostService.findBestRoomMateMatchingPosts(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/deadline-imminent-matchingposts")
-    public ResponseEntity<ResponseDto> getDeadlineImminentMatchingPosts(Authentication authentication){
+    public ResponseEntity<ResponseDto> getDeadlineImminentMatchingPosts(Authentication authentication, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         log.info("Request to get deadline-imminent matching posts");
-        FindDeadlineImminentMatchingPostsResponse response = matchingPostService.findDeadlineImminentMatchingPosts(authentication);
+        FindDeadlineImminentMatchingPostsResponse response = matchingPostService.findDeadlineImminentMatchingPosts(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

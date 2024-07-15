@@ -3,12 +3,16 @@ package com.likelion.oegaein.domain.matching.dto.matchingpost;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.likelion.oegaein.global.dto.ResponseDto;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
-@Builder
+@Getter
+@AllArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FindMyMatchingPostResponse implements ResponseDto {
-    private final List<FindMyMatchingPostData> data;
+    private int curPage;
+    private int totalPages;
+    private List<FindMyMatchingPostData> data;
 }

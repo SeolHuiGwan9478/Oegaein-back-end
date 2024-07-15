@@ -8,6 +8,7 @@ import com.likelion.oegaein.domain.member.dto.oauth.GoogleOauthUserInfo;
 import com.likelion.oegaein.domain.member.entity.member.Block;
 import com.likelion.oegaein.domain.member.entity.member.Likey;
 import com.likelion.oegaein.domain.member.entity.member.Member;
+import com.likelion.oegaein.domain.member.entity.profile.Profile;
 import com.likelion.oegaein.domain.member.exception.RefreshTokenException;
 import com.likelion.oegaein.domain.member.repository.BlockRepository;
 import com.likelion.oegaein.domain.member.repository.LikeRepository;
@@ -73,6 +74,16 @@ public class MemberService {
         String refreshToken = jwtUtil.generateRefreshToken(member);
         // setting refresh token;
         member.renewRefreshToken(refreshToken);
+        Profile profile = member.getProfile();
+        if(profile == null){
+            return GoogleOauthLoginResponse.builder()
+                    .email(member.getEmail())
+                    .photoUrl(member.getPhotoUrl())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .profileSetUpStatus(member.getProfileSetUpStatus())
+                    .build();
+        }
         return GoogleOauthLoginResponse.builder()
                 .email(member.getEmail())
                 .name(member.getProfile().getName())

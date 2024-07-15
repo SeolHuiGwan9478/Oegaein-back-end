@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,65 +150,81 @@ public class MatchingPostService {
     }
 
     // 내 매칭글 조회
-    public FindMyMatchingPostResponse findMyMatchingPosts(Authentication authentication){
+    public FindMyMatchingPostResponse findMyMatchingPosts(Authentication authentication, Pageable pageable){
         Member author = memberRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
-        List<MatchingPost> findMatchingPosts = matchingPostRepository.findByAuthor(author);
+        Page<MatchingPost> result = matchingPostRepository.findByAuthor(author, pageable);
+        List<MatchingPost> findMatchingPosts = result.getContent();
         List<FindMyMatchingPostData> findMyMatchingPostData = findMatchingPosts.stream()
                 .map(FindMyMatchingPostData::toFindMyMatchingPostData
                 ).toList();
-        return FindMyMatchingPostResponse.builder()
-                .data(findMyMatchingPostData)
-                .build();
+        return new FindMyMatchingPostResponse(
+                result.getNumber(),
+                result.getTotalPages(),
+                findMyMatchingPostData
+        );
     }
 
     // 베스트 룸메이트 매칭글 조회
-    public FindBestRoomMateMatchingPostsResponse findBestRoomMateMatchingPosts(Authentication authentication){
+    public FindBestRoomMateMatchingPostsResponse findBestRoomMateMatchingPosts(Authentication authentication, Pageable pageable){
         // find matchingPosts
-        List<MatchingPost> findMatchingPosts;
+        Page<MatchingPost> result;
         if (authentication != null){ // find member except black list members
             Member member = memberRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
             List<Long> blackList = getBlackList(member);
-            if(blackList.isEmpty()) findMatchingPosts = matchingPostQueryRepository.findBestRoomMateMatchingPosts();
-            else findMatchingPosts = matchingPostQueryRepository.findBestRoomMateMatchingPostsExceptBlockedMember(blackList);
+            if(blackList.isEmpty()) result = matchingPostQueryRepository.findBestRoomMateMatchingPosts(pageable);
+            else result = matchingPostQueryRepository.findBestRoomMateMatchingPostsExceptBlockedMember(blackList, pageable);
         }else{
-            findMatchingPosts = matchingPostQueryRepository.findBestRoomMateMatchingPosts();
+            result = matchingPostQueryRepository.findBestRoomMateMatchingPosts(pageable);
         }
+        List<MatchingPost> findMatchingPosts = result.getContent();
         List<FindBestRoomMateMatchingPostsData> bestRoomMateMatchingPostsData = findMatchingPosts.stream()
                 .map(FindBestRoomMateMatchingPostsData::toFindBestRoomMateMatchingPostData)
                 .toList();
-        return new FindBestRoomMateMatchingPostsResponse(bestRoomMateMatchingPostsData);
+        return new FindBestRoomMateMatchingPostsResponse(
+                result.getNumber(),
+                result.getTotalPages(),
+                bestRoomMateMatchingPostsData
+        );
     }
 
-    public FindDeadlineImminentMatchingPostsResponse findDeadlineImminentMatchingPosts(Authentication authentication){
+    public FindDeadlineImminentMatchingPostsResponse findDeadlineImminentMatchingPosts(Authentication authentication, Pageable pageable){
         // find matchingPosts
-        List<MatchingPost> findMatchingPosts;
+        Page<MatchingPost> result;
         LocalDate currentDate = LocalDate.now();
         LocalDate beforeOneDayDate = LocalDate.now().plusDays(1);
         if (authentication != null){ // find member except black list members
             Member member = memberRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
             List<Long> blackList = getBlackList(member);
-            if(blackList.isEmpty()) findMatchingPosts = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
-                    beforeOneDayDate,
-                    currentDate
-            );
-            else findMatchingPosts = matchingPostQueryRepository.findMatchingPostsBetweenTwoDatesExceptBlockedMember(
+            if(blackList.isEmpty()) result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
                     beforeOneDayDate,
                     currentDate,
-                    blackList
+                    pageable
+            );
+            else result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDatesExceptBlockedMember(
+                    beforeOneDayDate,
+                    currentDate,
+                    blackList,
+                    pageable
             );
         }else{
-            findMatchingPosts = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
+            result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
                     beforeOneDayDate,
-                    currentDate
+                    currentDate,
+                    pageable
             );
         }
+        List<MatchingPost> findMatchingPosts = result.getContent();
         List<FindDeadlineImminentMatchingPostsData> deadlineImminentMatchingPostsData = findMatchingPosts.stream()
                 .map(FindDeadlineImminentMatchingPostsData::toFindDeadlineImminentMatchingPostsData)
                 .toList();
-        return new FindDeadlineImminentMatchingPostsResponse(deadlineImminentMatchingPostsData);
+        return new FindDeadlineImminentMatchingPostsResponse(
+                result.getNumber(),
+                result.getTotalPages(),
+                deadlineImminentMatchingPostsData
+        );
     }
 
     // 사용자 정의 함수

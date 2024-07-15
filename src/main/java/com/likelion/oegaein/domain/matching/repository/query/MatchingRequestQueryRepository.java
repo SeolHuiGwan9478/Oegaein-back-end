@@ -22,9 +22,11 @@ public class MatchingRequestQueryRepository {
                 " join fetch mrmp.author mrmpa" +
                 " join fetch mrmpa.profile mrmpap" +
                 " where mrmpa.id = :authorId" +
+                " and mr.matchingAcceptance = :mrstatus" +
                 " order by mr.createdAt desc";
         return em.createQuery(jpql, MatchingRequest.class)
                 .setParameter("authorId", authorId)
+                .setParameter("mrstatus", MatchingAcceptance.WAITING)
                 .getResultList();
     }
 

@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Builder
@@ -24,10 +26,11 @@ public class FindMyMatchingReqData {
 
     private Long matchingPostId; // 매칭글 ID
     private String title; // 제목
-    private DongType dongType; // 동
-    private RoomSizeType roomSizeType; // 호실
+    private DongType dong; // 동
+    private RoomSizeType roomSize; // 호실
     private int targetNumberOfPeople; // 모집인원
-    private MatchingAcceptance matchingAcceptance; // 매칭 상태
+    private MatchingAcceptance matchingStatus; // 매칭 상태
+    private long dDay;
 
     public static FindMyMatchingReqData toFindMatchingReqData(MatchingRequest matchingRequest){
         MatchingPost matchingPost = matchingRequest.getMatchingPost();
@@ -40,10 +43,11 @@ public class FindMyMatchingReqData {
                 .gender(author.getProfile().getGender())
                 .matchingPostId(matchingPost.getId())
                 .title(matchingPost.getTitle())
-                .dongType(matchingPost.getDongType())
-                .roomSizeType(matchingPost.getRoomSizeType())
+                .dong(matchingPost.getDongType())
+                .roomSize(matchingPost.getRoomSizeType())
                 .targetNumberOfPeople(matchingPost.getTargetNumberOfPeople())
-                .matchingAcceptance(matchingRequest.getMatchingAcceptance())
+                .matchingStatus(matchingRequest.getMatchingAcceptance())
+                .dDay(ChronoUnit.DAYS.between(LocalDate.now(), matchingPost.getDeadline()))
                 .build();
     }
 }

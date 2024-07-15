@@ -12,5 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FindDeadlineImminentMatchingPostsResponse implements ResponseDto {
-    List<FindDeadlineImminentMatchingPostsData> data;
+    private int curPage;
+    private int totalPages;
+    private List<FindDeadlineImminentMatchingPostsData> data;
 }
