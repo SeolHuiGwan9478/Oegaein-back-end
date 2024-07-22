@@ -44,7 +44,8 @@ public class MatchingPostQueryRepository {
 
         // Create count query to get the total number of results
         String countJpql = "select count(mp) from MatchingPost mp" +
-                " join fetch mp.author mpa" +
+                " join mp.author mpa" +
+                " join mpa.profile mpap" +
                 " where mpap.score >= :standardRate";
         Long total = em.createQuery(countJpql, Long.class)
                 .setParameter("standardRate", STANDARD_RATE)

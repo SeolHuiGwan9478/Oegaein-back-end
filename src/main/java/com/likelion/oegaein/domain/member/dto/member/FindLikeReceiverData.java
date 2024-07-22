@@ -25,7 +25,7 @@ public class FindLikeReceiverData implements ResponseDto {
 
     public static FindLikeReceiverData of(Profile profile) {
         return FindLikeReceiverData.builder()
-                .receiverId(profile.getId())
+                .receiverId(profile.getMember().getId())
                 .name(profile.getName())
                 .photoUrl(profile.getMember().getPhotoUrl())
                 .gender(profile.getGender())

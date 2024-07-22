@@ -2,9 +2,12 @@ package com.likelion.oegaein.domain.matching.service;
 
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
+import com.likelion.oegaein.domain.matching.entity.MatchingRequest;
 import com.likelion.oegaein.domain.matching.entity.MatchingStatus;
 import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
+import com.likelion.oegaein.domain.matching.repository.MatchingRequestRepository;
 import com.likelion.oegaein.domain.matching.repository.query.MatchingPostQueryRepository;
+import com.likelion.oegaein.domain.matching.repository.query.MatchingRequestQueryRepository;
 import com.likelion.oegaein.domain.matching.validation.MatchingPostValidator;
 import com.likelion.oegaein.domain.member.entity.member.Block;
 import com.likelion.oegaein.domain.member.entity.member.Member;
@@ -225,6 +228,18 @@ public class MatchingPostService {
                 result.getTotalPages(),
                 deadlineImminentMatchingPostsData
         );
+    }
+
+    public FindOtherMatchingPostsResponse findOtherMatchingPosts(Long userId, Pageable pageable){
+        Member member = memberRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG)
+        );
+        Page<MatchingPost> result = matchingPostRepository.findByAuthor(member, pageable);
+        int curPage = result.getNumber();
+        int totalPages = result.getTotalPages();
+        List<MatchingPost> matchingPosts = result.getContent();
+        List<FindOtherMatchingPostsData> data = matchingPosts.stream().map(FindOtherMatchingPostsData::toFindOtherMatchingPostsData).toList();
+        return new FindOtherMatchingPostsResponse(curPage, totalPages, data);
     }
 
     // 사용자 정의 함수

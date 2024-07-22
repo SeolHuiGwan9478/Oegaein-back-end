@@ -84,4 +84,11 @@ public class MatchingPostApiController {
         FindDeadlineImminentMatchingPostsResponse response = matchingPostService.findDeadlineImminentMatchingPosts(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/api/v1/other-matchingposts/{userId}")
+    public ResponseEntity<ResponseDto> getOtherMatchingPosts(@PathVariable("userId") Long userId, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        log.info("Request to get other-matching posts");
+        FindOtherMatchingPostsResponse response = matchingPostService.findOtherMatchingPosts(userId, pageable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

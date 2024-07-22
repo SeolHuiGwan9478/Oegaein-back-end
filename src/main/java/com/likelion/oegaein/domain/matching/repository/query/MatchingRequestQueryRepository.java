@@ -29,7 +29,6 @@ public class MatchingRequestQueryRepository {
                 .setParameter("mrstatus", MatchingAcceptance.WAITING)
                 .getResultList();
     }
-
     public int countCompletedMatchingRequest(MatchingPost matchingPost){
         Long matchingPostId = matchingPost.getId();
         String jpql = "select count(mr) from MatchingRequest mr" +

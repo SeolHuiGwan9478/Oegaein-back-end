@@ -46,18 +46,17 @@ public class SecurityConfig {
             // ALL 인증
             configure.requestMatchers("/api/v1/roommate-alarms**").authenticated();
             configure.requestMatchers("/api/v1/delivery-alarms**").authenticated();
-            configure.requestMatchers("/api/v1/comments**").authenticated();
-            configure.requestMatchers("/api/v1/replies**").authenticated();
-            configure.requestMatchers("/api/v1/member/like**").authenticated();
-            configure.requestMatchers("/api/v1/member/block**").authenticated();
-            configure.requestMatchers("/api/v1/member/profile**").authenticated();
+            configure.requestMatchers("/api/v1/comments**", "/api/v1/comments/**").authenticated();
+            configure.requestMatchers("/api/v1/replies**", "/api/v1/replies/**").authenticated();
+            configure.requestMatchers("/api/v1/member/like**", "/api/v1/member/like/**").authenticated();
+            configure.requestMatchers("/api/v1/member/block**", "/api/v1/member/block/**").authenticated();
+            configure.requestMatchers("/api/v1/member/profile**", "/api/v1/member/profile/**").authenticated();
             // GET 인증
             configure.requestMatchers(HttpMethod.GET,
                     "/api/v1/my-matchingposts**",
                     "/api/v1/my-matchingrequests**",
                     "/api/v1/come-matchingrequests**",
                     "/api/v1/member/my-profile**",
-                    "/api/v1/review**",
                     "/api/v1/reviews**"
             ).authenticated();
             // POST 인증
@@ -69,18 +68,18 @@ public class SecurityConfig {
             ).authenticated();
             // PUT 인증
             configure.requestMatchers(HttpMethod.PUT,
-                    "/api/v1/matchingposts**"
+                    "/api/v1/matchingposts/**"
             ).authenticated();
             // PATCH 인증
             configure.requestMatchers(HttpMethod.PATCH,
-                "/api/v1/matchingrequests**",
-                    "/api/v1/matchingrequests/*/accept",
-                    "/api/v1/matchingrequests/*/reject"
+                "/api/v1/matchingrequests/**",
+                    "/api/v1/matchingrequests/**/accept",
+                    "/api/v1/matchingrequests/**/reject"
             ).authenticated();
             // DELETE 인증
             configure.requestMatchers(HttpMethod.DELETE,
-                    "/api/v1/matchingposts**",
-                    "/api/v1/matchingrequests**"
+                    "/api/v1/matchingposts/**",
+                    "/api/v1/matchingrequests/**"
             ).authenticated();
             configure.anyRequest().permitAll();
         });

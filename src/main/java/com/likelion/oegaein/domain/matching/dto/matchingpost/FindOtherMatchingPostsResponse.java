@@ -11,8 +11,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FindBestRoomMateMatchingPostsResponse implements ResponseDto {
+public class FindOtherMatchingPostsResponse implements ResponseDto {
     private int curPage;
     private int totalPages;
-    private List<FindBestRoomMateMatchingPostsData> data;
+    private List<FindOtherMatchingPostsData> data;
 }
