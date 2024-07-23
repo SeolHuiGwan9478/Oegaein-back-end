@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchingPostQueryRepository {
     private final EntityManager em; // 엔티티 매니저
-    private final int STANDARD_RATE = 4; // 베스트 룸메이트 기준
+    private final int STANDARD_RATE = 5; // 베스트 룸메이트 기준
 
     public List<MatchingPost> findByMember(Member member){
         String jpql = "select distinct mp from MatchingPost mp"

@@ -1,5 +1,6 @@
 package com.likelion.oegaein.domain.matching.repository;
 
+import com.likelion.oegaein.domain.matching.entity.MatchingAcceptance;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
 import com.likelion.oegaein.domain.matching.entity.MatchingRequest;
 import com.likelion.oegaein.domain.member.entity.member.Member;
@@ -14,4 +15,6 @@ public interface MatchingRequestRepository extends JpaRepository<MatchingRequest
     List<MatchingRequest> findByParticipant(Member participant);
 
     Optional<MatchingRequest> findByParticipantAndMatchingPost(Member participant, MatchingPost matchingPost);
+    List<MatchingRequest> findByMatchingPostAndMatchingAcceptance(MatchingPost matchingPost, MatchingAcceptance matchingAcceptance);
+    List<MatchingRequest> findByMatchingPost(MatchingPost matchingPost);
 }

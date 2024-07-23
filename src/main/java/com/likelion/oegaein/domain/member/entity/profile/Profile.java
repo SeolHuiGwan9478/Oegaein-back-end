@@ -65,4 +65,8 @@ public class Profile {
         this.soundSensitivity = request.getSoundSensitivity();
         this.introduction = request.getIntroduction();
     }
+
+    public void updateScore(int plusScore){
+        this.score += plusScore;
+    }
 }

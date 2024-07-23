@@ -1,6 +1,7 @@
 package com.likelion.oegaein.domain.matching.service;
 
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
+import com.likelion.oegaein.domain.matching.entity.MatchingAcceptance;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
 import com.likelion.oegaein.domain.matching.entity.MatchingRequest;
 import com.likelion.oegaein.domain.matching.entity.MatchingStatus;
@@ -40,6 +41,7 @@ public class MatchingPostService {
     // repository & validator
     private final MatchingPostRepository matchingPostRepository;
     private final MatchingPostQueryRepository matchingPostQueryRepository;
+    private final MatchingRequestRepository matchingRequestRepository;
     private final MemberRepository memberRepository;
     private final BlockRepository blockRepository;
     // validators
@@ -107,13 +109,15 @@ public class MatchingPostService {
     public FindMatchingPostResponse findByIdMatchingPost(Long matchingPostId, Authentication authentication){
         MatchingPost matchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MATCHING_POST_ERR_MSG));
+        MatchingRequest matchingRequest = null;
         if(authentication != null){
             Member member = memberRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
             blockValidator.validateBlockedMember(member.getId(), matchingPost.getAuthor().getId());
             blockValidator.validateBlockedMember(matchingPost.getAuthor().getId(), member.getId());
+            matchingRequest = matchingRequestRepository.findByParticipantAndMatchingPost(member, matchingPost).orElse(null);
         }
-        return FindMatchingPostResponse.toFindMatchingPostResponse(matchingPost);
+        return FindMatchingPostResponse.toFindMatchingPostResponse(matchingPost, matchingRequest);
     }
 
     // 특정 매칭글 삭제
@@ -146,9 +150,16 @@ public class MatchingPostService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
         MatchingPost findMatchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MATCHING_POST_ERR_MSG));
+        List<MatchingRequest> acceptedMatchingRequests = matchingRequestRepository.findByMatchingPostAndMatchingAcceptance(
+                findMatchingPost, MatchingAcceptance.WAITING
+        );
+        acceptedMatchingRequests.forEach(MatchingRequest::rejectMatchingRequest);
         memberValidator.validateIsOwnerMatchingPost(authenticatedMember.getId(), findMatchingPost.getAuthor().getId());
         memberValidator.validateIsAlreadyCompleted(findMatchingPost.getMatchingStatus());
         findMatchingPost.completeMatchingPost();
+        List<MatchingRequest> resultMatchingRequests = matchingRequestRepository.findByMatchingPost(findMatchingPost);
+        int plusScore = resultMatchingRequests.size();
+        authenticatedMember.getProfile().updateScore(plusScore);
         return new CompleteMatchingPostResponse(matchingPostId);
     }
 
