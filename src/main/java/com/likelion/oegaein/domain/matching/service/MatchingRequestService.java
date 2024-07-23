@@ -6,8 +6,11 @@ import com.likelion.oegaein.domain.alarm.repository.RoommateAlarmRepository;
 import com.likelion.oegaein.domain.alarm.repository.query.RoommateAlarmQueryRepository;
 import com.likelion.oegaein.domain.chat.entity.ChatRoom;
 import com.likelion.oegaein.domain.chat.entity.ChatRoomMember;
+import com.likelion.oegaein.domain.chat.entity.Message;
+import com.likelion.oegaein.domain.chat.entity.MessageStatus;
 import com.likelion.oegaein.domain.chat.repository.ChatRoomMemberRepository;
 import com.likelion.oegaein.domain.chat.repository.ChatRoomRepository;
+import com.likelion.oegaein.domain.chat.repository.MessageRepository;
 import com.likelion.oegaein.domain.chat.service.ChatRoomService;
 import com.likelion.oegaein.domain.email.dto.EmailMessage;
 import com.likelion.oegaein.domain.email.service.EmailService;
@@ -19,6 +22,7 @@ import com.likelion.oegaein.domain.matching.validation.MatchingRequestValidator;
 import com.likelion.oegaein.domain.member.entity.member.Member;
 import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
 import com.likelion.oegaein.domain.matching.repository.MatchingRequestRepository;
+import com.likelion.oegaein.domain.member.entity.profile.Profile;
 import com.likelion.oegaein.domain.member.repository.MemberRepository;
 import com.likelion.oegaein.domain.member.validation.BlockValidator;
 import com.likelion.oegaein.domain.member.validation.MemberValidator;
@@ -49,6 +53,7 @@ public class MatchingRequestService {
     private final String EMAIL_MATCHING_REQUEST_ACCEPT_SUBJECT = "[외개인] 매칭 요청이 수락되었습니다.";
     private final String EMAIL_MATCHING_REQUEST_REJECT_SUBJECT = "[외개인] 매칭 요청이 거부되었습니다.";
     private final String EMAIL_MATCHING_REQUEST_COMPLETE_SUBJECT = "[외개인] 매칭 요청이 완료되었습니다.";
+    private final String CHATROOM_ENTER_MESSAGE = "님이 입장하였습니다.";
     private final String EMAIL_MATCHING_REQUEST_TYPE = "matchingrequest";
     private final String EMAIL_MATCHING_REQUEST_ACCEPT_TYPE = "matchingrequestaccept";
     private final String EMAIL_MATCHING_REQUEST_REJECT_TYPE = "matchingrequestreject";
@@ -64,6 +69,7 @@ public class MatchingRequestService {
     private final RoommateAlarmQueryRepository roommateAlarmQueryRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final MessageRepository messageRepository;
     // service
     private final EmailService emailService;
     private final ChatRoomService chatRoomService;
@@ -163,13 +169,39 @@ public class MatchingRequestService {
         emailService.sendMail(emailMessage,EMAIL_MATCHING_REQUEST_TYPE);
         // check isAlreadyExist ChatRoom
         Optional<ChatRoom> findChatRoom = chatRoomRepository.findByMatchingPost(matchingPost);
+        Profile participantProfile = matchingRequest.getParticipant().getProfile();
+        Profile authenticatedMemberProfile = authenticatedMember.getProfile();
         if(findChatRoom.isEmpty()){
             ChatRoom newChatRoom = createChatRoom(matchingPost);
             createChatRoomMember(authenticatedMember, newChatRoom);
             createChatRoomMember(matchingRequest.getParticipant(), newChatRoom);
+            Message authMemberEnterMessage = Message.builder()
+                            .roomId(newChatRoom.getRoomId())
+                            .senderName(authenticatedMemberProfile.getName())
+                            .photoUrl(authenticatedMember.getPhotoUrl())
+                            .message(authenticatedMemberProfile.getName() + CHATROOM_ENTER_MESSAGE)
+                            .messageStatus(MessageStatus.ENTER)
+                            .date(LocalDateTime.now()).build();
+            Message participantEnterMessage = Message.builder()
+                    .roomId(newChatRoom.getRoomId())
+                    .senderName(participantProfile.getName())
+                    .photoUrl(matchingRequest.getParticipant().getPhotoUrl())
+                    .message(participantProfile.getName() + CHATROOM_ENTER_MESSAGE)
+                    .messageStatus(MessageStatus.ENTER)
+                    .date(LocalDateTime.now()).build();
+            messageRepository.save(authMemberEnterMessage);
+            messageRepository.save(participantEnterMessage);
         } // create chatroom & chatroomMember for owner
         else{
             createChatRoomMember(matchingRequest.getParticipant(), findChatRoom.get());
+            Message participantEnterMessage = Message.builder()
+                    .roomId(findChatRoom.get().getRoomId())
+                    .senderName(participantProfile.getName())
+                    .photoUrl(matchingRequest.getParticipant().getPhotoUrl())
+                    .message(participantProfile.getName() + CHATROOM_ENTER_MESSAGE)
+                    .messageStatus(MessageStatus.ENTER)
+                    .date(LocalDateTime.now()).build();
+            messageRepository.save(participantEnterMessage);
         }
         return new AcceptMatchingReqResponse(matchingRequestId);
     }

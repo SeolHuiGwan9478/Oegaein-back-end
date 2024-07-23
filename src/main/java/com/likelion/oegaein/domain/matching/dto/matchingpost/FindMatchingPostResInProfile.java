@@ -30,7 +30,7 @@ public class FindMatchingPostResInProfile {
 
     public static FindMatchingPostResInProfile toFindMatchingPostResInProfile(Profile profile){
         return FindMatchingPostResInProfile.builder()
-                .id(profile.getId())
+                .id(profile.getMember().getId())
                 .photoUrl(profile.getMember().getPhotoUrl())
                 .gender(profile.getGender())
                 .studentNo(profile.getStudentNo())

@@ -72,6 +72,7 @@ public class SecurityConfig {
             ).authenticated();
             // PATCH 인증
             configure.requestMatchers(HttpMethod.PATCH,
+                    "/api/v1/matchingposts/**",
                 "/api/v1/matchingrequests/**",
                     "/api/v1/matchingrequests/**/accept",
                     "/api/v1/matchingrequests/**/reject"

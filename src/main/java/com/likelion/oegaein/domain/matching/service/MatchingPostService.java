@@ -153,11 +153,13 @@ public class MatchingPostService {
         List<MatchingRequest> acceptedMatchingRequests = matchingRequestRepository.findByMatchingPostAndMatchingAcceptance(
                 findMatchingPost, MatchingAcceptance.WAITING
         );
+        System.out.println("test");
         acceptedMatchingRequests.forEach(MatchingRequest::rejectMatchingRequest);
         memberValidator.validateIsOwnerMatchingPost(authenticatedMember.getId(), findMatchingPost.getAuthor().getId());
         memberValidator.validateIsAlreadyCompleted(findMatchingPost.getMatchingStatus());
         findMatchingPost.completeMatchingPost();
         List<MatchingRequest> resultMatchingRequests = matchingRequestRepository.findByMatchingPost(findMatchingPost);
+        System.out.println(resultMatchingRequests.size());
         int plusScore = resultMatchingRequests.size();
         authenticatedMember.getProfile().updateScore(plusScore);
         return new CompleteMatchingPostResponse(matchingPostId);
