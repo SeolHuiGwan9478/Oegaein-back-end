@@ -77,6 +77,7 @@ public class MemberService {
         Profile profile = member.getProfile();
         if(profile == null){
             return GoogleOauthLoginResponse.builder()
+                    .id(member.getId())
                     .email(member.getEmail())
                     .photoUrl(member.getPhotoUrl())
                     .accessToken(accessToken)
@@ -85,6 +86,7 @@ public class MemberService {
                     .build();
         }
         return GoogleOauthLoginResponse.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .name(member.getProfile().getName())
                 .gender(member.getProfile().getGender())

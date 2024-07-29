@@ -71,7 +71,7 @@ public class MatchingPostQueryRepository {
 
         // Create count query to get the total number of results
         String countJpql = "select count(mp) from MatchingPost mp" +
-                " join fetch mp.author mpa" +
+                " join mp.author mpa" +
                 " where mp.deadline between :fromDate and :toDate" +
                 " and mp.matchingStatus = :matchingPostStatus";
         Long total = em.createQuery(countJpql, Long.class)
@@ -82,16 +82,31 @@ public class MatchingPostQueryRepository {
         return new PageImpl<>(matchingPosts, pageable, total);
     }
 
-    public List<MatchingPost> searchMatchingPost(String content){
+    public Page<MatchingPost> searchMatchingPost(String content, Pageable pageable){
         String jpql = "select mp from MatchingPost mp" +
                 " join fetch mp.author mpa" +
                 " join fetch mpa.profile mpap" +
                 " where mp.title like concat('%',:content,'%')" +
                 " or mp.content like concat('%',:content,'%')" +
+                " or mpap.name like concat('%',:content,'%')" +
                 " order by mp.createdAt desc";
-        return em.createQuery(jpql, MatchingPost.class)
+        TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("content", content)
-                .getResultList();
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize());
+        // Get the paginated results
+        List<MatchingPost> matchingPosts = query.getResultList();
+        // Create count query to get the total number of results
+        String countJpql = "select count(mp) from MatchingPost mp" +
+                " join mp.author mpa" +
+                " join mpa.profile mpap" +
+                " where mp.title like concat('%',:content,'%')" +
+                " or mp.content like concat('%',:content,'%')" +
+                " or mpap.name like concat('%',:content,'%')";
+        Long total = em.createQuery(countJpql, Long.class)
+                .setParameter("content", content)
+                .getSingleResult();
+        return new PageImpl<>(matchingPosts, pageable, total);
     }
 
     public Page<MatchingPost> findAllExceptBlockedMember(List<Long> blockedMemberIds, Pageable pageable){
@@ -140,7 +155,7 @@ public class MatchingPostQueryRepository {
 
         // Create count query to get the total number of results
         String countJpql = "select count(mp) from MatchingPost mp" +
-                " join fetch mp.author mpa" +
+                " join mp.author mpa" +
                 " where mpap.score >= :standardRate" +
                 " and mpa.id not in :blockedMemberIds";
         Long total = em.createQuery(countJpql, Long.class)
@@ -168,7 +183,7 @@ public class MatchingPostQueryRepository {
 
         // Create count query to get the total number of results
         String countJpql = "select count(mp) from MatchingPost mp" +
-                " join fetch mp.author mpa" +
+                " join mp.author mpa" +
                 " where mp.deadline between :fromDate and :toDate" +
                 " and mp.matchingStatus = :matchingPostStatus" +
                 " and mpa.id not in :blockedmemberids";

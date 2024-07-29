@@ -59,7 +59,7 @@ public class RoommateAlarmService {
     public DeleteRoommateAlarmsResponse removeRoommateAlarms(Authentication authentication){
         Member authenticatedMember = memberRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
-        int deletedRoommateAlarmCount = roommateAlarmQueryRepository.deleteAllByMember(authenticatedMember.getId());
+        int deletedRoommateAlarmCount = roommateAlarmQueryRepository.deleteAllByMember(authenticatedMember);
         return new DeleteRoommateAlarmsResponse(deletedRoommateAlarmCount);
     }
 }

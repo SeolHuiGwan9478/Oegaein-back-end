@@ -1,6 +1,7 @@
 package com.likelion.oegaein.domain.alarm.repository.query;
 
 import com.likelion.oegaein.domain.alarm.entity.RoommateAlarm;
+import com.likelion.oegaein.domain.member.entity.member.Member;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,11 +16,11 @@ public class RoommateAlarmQueryRepository {
     private final EntityManager em;
     private final JdbcTemplate jdbcTemplate;
 
-    public int deleteAllByMember(Long memberId){
+    public int deleteAllByMember(Member member){
         String jpql = "delete from RoommateAlarm ra" +
-                " where ra.member = :memberid";
+                " where ra.member = :member";
         int deletedRoommateAlarmCount = em.createQuery(jpql)
-                .setParameter("memberid", memberId)
+                .setParameter("member", member)
                 .executeUpdate();
         em.flush();
         em.clear();

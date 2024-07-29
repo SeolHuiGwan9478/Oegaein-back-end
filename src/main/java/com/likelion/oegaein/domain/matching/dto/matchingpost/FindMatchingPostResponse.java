@@ -35,6 +35,7 @@ public class FindMatchingPostResponse implements ResponseDto {
     private FindMatchingPostResInProfile authorProfile; // 작성자 프로필
     private int commentsCount; // 댓글 개수
     private List<FindCommentData> comments; // 자식 댓글
+    private Long authorId; // 작성자 ID
     private String authorName; // 작성자 이름
     private Long matchingRequestId;
 
@@ -58,6 +59,7 @@ public class FindMatchingPostResponse implements ResponseDto {
                 .authorProfile(convertedProfile)
                 .commentsCount(calcCommentsCount)
                 .comments(convertedComments)
+                .authorId(matchingPost.getAuthor().getId())
                 .authorName(findProfile.getName())
                 .build();
         if(matchingRequest != null){

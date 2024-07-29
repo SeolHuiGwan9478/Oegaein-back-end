@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindComeMatchingReqData {
+    private Long id; // 매칭 신청자 ID
     private Long matchingRequestId; // 매칭 요청 ID
     private LocalDateTime createdAt; // 매칭 요청 생성일
     private DongType dong; // 동 타입
@@ -35,6 +36,7 @@ public class FindComeMatchingReqData {
         Profile profile = participant.getProfile();
         MatchingPost matchingPost = matchingRequest.getMatchingPost();
         return FindComeMatchingReqData.builder()
+                .id(participant.getId())
                 .matchingRequestId(matchingRequest.getId())
                 .createdAt(matchingPost.getCreatedAt())
                 .dong(matchingPost.getDongType())

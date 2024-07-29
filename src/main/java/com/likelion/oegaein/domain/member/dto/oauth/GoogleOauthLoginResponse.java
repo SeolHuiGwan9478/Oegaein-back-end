@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GoogleOauthLoginResponse implements ResponseDto {
+    private Long id;
     private String email;
     private String name;
     private String photoUrl;
