@@ -20,23 +20,16 @@ import java.util.List;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ProfileData {
     private String name;
-    @Enumerated(EnumType.STRING)
     private Gender gender;
     private int studentNo;
     private Date birthdate;
     private Major major;
     private String introduction;
-    @Enumerated(EnumType.STRING)
     private Mbti mbti;
     private List<SleepingHabit> sleepingHabit;
-    @Enumerated(EnumType.STRING)
     private LifePattern lifePattern;
-    @Enumerated(EnumType.STRING)
     private Smoking smoking;
-    @Enumerated(EnumType.STRING)
     private CleaningCycle cleaningCycle;
-    @Enumerated(EnumType.STRING)
     private Outing outing;
-    @Enumerated(EnumType.STRING)
     private Sensitivity soundSensitivity;
 }

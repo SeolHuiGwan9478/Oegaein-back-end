@@ -64,23 +64,13 @@ public class ProfileService {
 
     public UpdateProfileResponse updateProfile(String email, UpdateProfileRequest form) {
         Member loginMember = findAuthenticatedMember(email);// 사용자 찾기
-
-        // 닉네임이 바뀌었으면 중복 확인
         if (!loginMember.getProfile().getName().equals(form.getName())) {
             isValidName(form.getName());
         }
-
-        // 프로필 찾기
         Profile profile = profileRepository.findById(loginMember.getProfile().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Not Found Profile: " + loginMember.getId()));
-
-        // 내용 저장
         profile.set(form);
-        loginMember.setPhotoUrl(form.getPhotoUrl());
-
-        // 수면습관 업데이트
         updateSleepingHabit(form.getSleepingHabit(), profile);
-
         return new UpdateProfileResponse(profile.getId());
     }
 

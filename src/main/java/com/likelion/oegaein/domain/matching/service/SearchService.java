@@ -28,7 +28,7 @@ public class SearchService {
         List<FindMatchingPostsData> findMatchingPostsData = findMatchingPosts.stream()
                 .map(FindMatchingPostsData::toFindMatchingPostsData).toList();
         return GeneralSearchResponse.builder()
-                .curePage(curPage)
+                .curPage(curPage)
                 .totalPages(totalPages)
                 .matchingPostsData(findMatchingPostsData)
                 .build();

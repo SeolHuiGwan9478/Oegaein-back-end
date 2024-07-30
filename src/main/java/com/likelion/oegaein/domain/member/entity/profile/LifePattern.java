@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum LifePattern {
     MORNING("아침형"),
-    NIGHT("새벽형");
+    NIGHT("저녁형");
 
     private final String value;
 

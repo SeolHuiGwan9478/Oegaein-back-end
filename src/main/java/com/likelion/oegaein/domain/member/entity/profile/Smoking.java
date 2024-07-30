@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Smoking {
-    SMOKER("흡연자"),
-    NON_SMOKER("비흡연자");
+    SMOKER("흡연"),
+    NON_SMOKER("비흡연");
 
     private final String value;
 

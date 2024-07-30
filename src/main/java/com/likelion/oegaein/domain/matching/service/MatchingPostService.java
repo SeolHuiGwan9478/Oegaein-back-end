@@ -209,26 +209,26 @@ public class MatchingPostService {
         // find matchingPosts
         Page<MatchingPost> result;
         LocalDate currentDate = LocalDate.now();
-        LocalDate beforeOneDayDate = LocalDate.now().plusDays(1);
+        LocalDate afterOneDayDate = LocalDate.now().plusDays(1);
         if (authentication != null){ // find member except black list members
             Member member = memberRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
             List<Long> blackList = getBlackList(member);
             if(blackList.isEmpty()) result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
-                    beforeOneDayDate,
                     currentDate,
+                    afterOneDayDate,
                     pageable
             );
             else result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDatesExceptBlockedMember(
-                    beforeOneDayDate,
                     currentDate,
+                    afterOneDayDate,
                     blackList,
                     pageable
             );
         }else{
             result = matchingPostQueryRepository.findMatchingPostsBetweenTwoDates(
-                    beforeOneDayDate,
                     currentDate,
+                    afterOneDayDate,
                     pageable
             );
         }

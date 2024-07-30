@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GeneralSearchResponse implements ResponseDto {
-    private int curePage;
+    private int curPage;
     private int totalPages;
     private List<FindMatchingPostsData> matchingPostsData;
 }

@@ -8,10 +8,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum SleepingHabit {
-    SNORER("코골이"),
-    BRUXISM("이갈이"),
-    TALKER("잠꼬대"),
-    SILENT("무소음");
+    SNORER("코골이형"),
+    BRUXISM("이갈이형"),
+    TALKER("잠꼬대형"),
+    SILENT("무소음형");
 
     private final String value;
 
