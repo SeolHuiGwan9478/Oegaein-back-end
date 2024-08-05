@@ -1,5 +1,8 @@
 package com.likelion.oegaein.domain.matching.service;
 
+import com.likelion.oegaein.domain.alarm.entity.RoommateAlarm;
+import com.likelion.oegaein.domain.alarm.entity.RoommateAlarmType;
+import com.likelion.oegaein.domain.alarm.repository.RoommateAlarmRepository;
 import com.likelion.oegaein.domain.matching.dto.matchingpost.*;
 import com.likelion.oegaein.domain.matching.entity.MatchingAcceptance;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
@@ -42,6 +45,7 @@ public class MatchingPostService {
     private final MatchingPostRepository matchingPostRepository;
     private final MatchingPostQueryRepository matchingPostQueryRepository;
     private final MatchingRequestRepository matchingRequestRepository;
+    private final RoommateAlarmRepository roommateAlarmRepository;
     private final MemberRepository memberRepository;
     private final BlockRepository blockRepository;
     // validators
@@ -150,16 +154,26 @@ public class MatchingPostService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
         MatchingPost findMatchingPost = matchingPostRepository.findById(matchingPostId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MATCHING_POST_ERR_MSG));
-        List<MatchingRequest> acceptedMatchingRequests = matchingRequestRepository.findByMatchingPostAndMatchingAcceptance(
+        List<MatchingRequest> waitingMatchingRequests = matchingRequestRepository.findByMatchingPostAndMatchingAcceptance(
                 findMatchingPost, MatchingAcceptance.WAITING
         );
-        System.out.println("test");
-        acceptedMatchingRequests.forEach(MatchingRequest::rejectMatchingRequest);
+        List<MatchingRequest> acceptedMatchingRequests = matchingRequestRepository.findByMatchingPostAndMatchingAcceptance(
+                findMatchingPost, MatchingAcceptance.ACCEPT
+        );
+        waitingMatchingRequests.forEach(MatchingRequest::rejectMatchingRequest);
+        for(MatchingRequest acceptedMatchingRequest : acceptedMatchingRequests){
+            RoommateAlarm newRoommateAlarm = RoommateAlarm.builder()
+                    .matchingPost(findMatchingPost)
+                    .matchingRequest(acceptedMatchingRequest)
+                    .member(acceptedMatchingRequest.getParticipant())
+                    .alarmType(RoommateAlarmType.MATCHING_POST_COMPLETED)
+                    .build();
+            roommateAlarmRepository.save(newRoommateAlarm);
+        }
         memberValidator.validateIsOwnerMatchingPost(authenticatedMember.getId(), findMatchingPost.getAuthor().getId());
         memberValidator.validateIsAlreadyCompleted(findMatchingPost.getMatchingStatus());
         findMatchingPost.completeMatchingPost();
         List<MatchingRequest> resultMatchingRequests = matchingRequestRepository.findByMatchingPost(findMatchingPost);
-        System.out.println(resultMatchingRequests.size());
         int plusScore = resultMatchingRequests.size();
         authenticatedMember.getProfile().updateScore(plusScore);
         return new CompleteMatchingPostResponse(matchingPostId);

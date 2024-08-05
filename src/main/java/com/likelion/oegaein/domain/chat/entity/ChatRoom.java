@@ -31,7 +31,7 @@ public class ChatRoom {
     private int memberCount; // 참가자 수
 
     @OneToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private MatchingPost matchingPost;
 
     @CreatedDate

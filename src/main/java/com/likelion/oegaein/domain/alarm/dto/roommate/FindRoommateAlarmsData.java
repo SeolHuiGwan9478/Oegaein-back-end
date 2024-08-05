@@ -25,7 +25,12 @@ public class FindRoommateAlarmsData {
     private LocalDateTime createdAt; // 생성일
 
     public static FindRoommateAlarmsData toFindRoommateAlarmsData(RoommateAlarm roommateAlarm){
-        Member member = roommateAlarm.getMember();
+        Member member;
+        if(roommateAlarm.getAlarmType().equals(RoommateAlarmType.MATCHING_REQUEST)){
+            member = roommateAlarm.getMatchingRequest().getParticipant();
+        }else{
+            member = roommateAlarm.getMatchingPost().getAuthor();
+        }
         Profile profile = member.getProfile();
         MatchingPost matchingPost = roommateAlarm.getMatchingPost();
         return FindRoommateAlarmsData.builder()

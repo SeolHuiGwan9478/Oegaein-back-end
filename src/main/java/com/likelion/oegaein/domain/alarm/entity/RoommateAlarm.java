@@ -1,6 +1,7 @@
 package com.likelion.oegaein.domain.alarm.entity;
 
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
+import com.likelion.oegaein.domain.matching.entity.MatchingRequest;
 import com.likelion.oegaein.domain.member.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,11 @@ public class RoommateAlarm {
     @JoinColumn(name = "matchingpost_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private MatchingPost matchingPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "matchingrequest_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private MatchingRequest matchingRequest;
 
     @Enumerated(value = EnumType.STRING)
     private RoommateAlarmType alarmType;

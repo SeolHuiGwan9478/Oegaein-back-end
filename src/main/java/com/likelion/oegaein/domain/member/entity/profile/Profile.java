@@ -43,7 +43,7 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     private Sensitivity soundSensitivity;
     @Size(max = 20)
-    private String introduction;
+    private String introduction = "";
     @Setter
     private double score;
     @Setter

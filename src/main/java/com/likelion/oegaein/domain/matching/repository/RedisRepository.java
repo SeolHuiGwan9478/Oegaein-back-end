@@ -1,0 +1,40 @@
+package com.likelion.oegaein.domain.matching.repository;
+
+import com.likelion.oegaein.domain.chat.entity.Message;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+@Repository
+@RequiredArgsConstructor
+public class RedisRepository {
+    private final RedisTemplate<String, LinkedList<Message>> redisTemplate;
+
+    // checking contains key
+    public Boolean containsKey(String roomId){
+        return redisTemplate.hasKey(roomId);
+    }
+
+    // get value
+    public LinkedList<Message> get(String roomId){
+        return redisTemplate.opsForValue().get(roomId);
+    }
+
+    // put value
+    public void put(String roomId, Queue<Message> messageQueue){
+        redisTemplate.opsForValue().set(roomId, new LinkedList<>(messageQueue));
+    }
+
+    // delete values
+    public void delete(String roomId){
+        redisTemplate.delete(roomId);
+    }
+
+    // delete all of data
+    public void deleteAll(){
+        redisTemplate.discard();
+    }
+}

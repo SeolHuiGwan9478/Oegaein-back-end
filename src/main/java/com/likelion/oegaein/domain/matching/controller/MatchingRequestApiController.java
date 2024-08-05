@@ -6,6 +6,9 @@ import com.likelion.oegaein.global.dto.ResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,16 +21,16 @@ public class MatchingRequestApiController {
     private final MatchingRequestService matchingRequestService;
 
     @GetMapping("/api/v1/my-matchingrequests") // 내가 신청한 매칭 신청 목록
-    public ResponseEntity<ResponseDto> getMyMatchingRequests(Authentication authentication){
+    public ResponseEntity<ResponseDto> getMyMatchingRequests(Authentication authentication, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         log.info("Request to get my matching requests");
-        FindMyMatchingReqsResponse response = matchingRequestService.findMyMatchingRequest(authentication);
+        FindMyMatchingReqsResponse response = matchingRequestService.findMyMatchingRequest(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/come-matchingrequests") // 나에게 온 매칭 신청 목록
-    public ResponseEntity<ResponseDto> getComeMatchingRequests(Authentication authentication){
+    public ResponseEntity<ResponseDto> getComeMatchingRequests(Authentication authentication, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         log.info("Request to get come matching requests");
-        FindComeMatchingReqsResponse response = matchingRequestService.findComeMatchingRequest(authentication);
+        FindComeMatchingReqsResponse response = matchingRequestService.findComeMatchingRequest(authentication, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

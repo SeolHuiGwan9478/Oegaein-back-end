@@ -59,7 +59,7 @@ public class MatchingPostQueryRepository {
                 " join fetch mpa.profile mpap" +
                 " where mp.deadline between :fromDate and :toDate" +
                 " and mp.matchingStatus = :matchingPostStatus" +
-                " order by mp.createdAt asc";
+                " order by mp.createdAt desc";
         TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)
@@ -172,7 +172,7 @@ public class MatchingPostQueryRepository {
                 " where mp.deadline between :fromDate and :toDate" +
                 " and mp.matchingStatus = :matchingPostStatus" +
                 " and mpa.id not in :blockedmemberids" +
-                " order by mp.createdAt asc";
+                " order by mp.createdAt desc";
         TypedQuery<MatchingPost> query = em.createQuery(jpql, MatchingPost.class)
                 .setParameter("fromDate", fromDate)
                 .setParameter("toDate", toDate)

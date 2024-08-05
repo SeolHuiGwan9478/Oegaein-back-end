@@ -14,5 +14,7 @@ import java.util.List;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FindMyMatchingReqsResponse implements ResponseDto {
     private int count;
+    private int curPage;
+    private int totalPages;
     private List<FindMyMatchingReqData> data;
 }

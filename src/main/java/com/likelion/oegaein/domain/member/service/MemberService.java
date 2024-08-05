@@ -63,12 +63,14 @@ public class MemberService {
         Member member = memberRepository.findByEmail(userInfo.getEmail()).orElseGet(() -> {
             Member newMember = Member.builder()
                     .email(userInfo.getEmail())
-                    .photoUrl(userInfo.getPicture())
                     .profileSetUpStatus(false)
                     .build();
             memberRepository.save(newMember);
             return newMember;
         });
+        if(!member.getPhotoUrl().equals(userInfo.getPicture())){
+            member.setPhotoUrl(userInfo.getPicture());
+        }
         // generate tokens
         String accessToken = jwtUtil.generateAccessToken(member);
         String refreshToken = jwtUtil.generateRefreshToken(member);

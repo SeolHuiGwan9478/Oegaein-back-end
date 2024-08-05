@@ -17,6 +17,7 @@ import com.likelion.oegaein.domain.email.service.EmailService;
 import com.likelion.oegaein.domain.matching.dto.matchingrequest.*;
 import com.likelion.oegaein.domain.matching.entity.MatchingPost;
 import com.likelion.oegaein.domain.matching.entity.MatchingRequest;
+import com.likelion.oegaein.domain.matching.repository.RedisRepository;
 import com.likelion.oegaein.domain.matching.repository.query.MatchingRequestQueryRepository;
 import com.likelion.oegaein.domain.matching.validation.MatchingRequestValidator;
 import com.likelion.oegaein.domain.member.entity.member.Member;
@@ -30,6 +31,8 @@ import com.likelion.oegaein.global.dto.ResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,9 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.http.HttpClient;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -59,6 +60,7 @@ public class MatchingRequestService {
     private final String EMAIL_MATCHING_REQUEST_REJECT_TYPE = "matchingrequestreject";
     private final String EMAIL_MATCHING_COMPLETE_TYPE = "matchingrequestcomplete";
     private final String CHAT_ROOM_NAME_POSTFIX = " 행성방";
+    private final int MAX_CACHE_SIZE_EACH_ROOM = 100;
 
     // repository
     private final MatchingRequestRepository matchingRequestRepository;
@@ -70,6 +72,7 @@ public class MatchingRequestService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final MessageRepository messageRepository;
+    private final RedisRepository redisRepository;
     // service
     private final EmailService emailService;
     private final ChatRoomService chatRoomService;
@@ -78,25 +81,33 @@ public class MatchingRequestService {
     private final MemberValidator memberValidator;
     private final BlockValidator blockValidator;
 
-    public FindMyMatchingReqsResponse findMyMatchingRequest(Authentication authentication){
+    public FindMyMatchingReqsResponse findMyMatchingRequest(Authentication authentication, Pageable pageable){
         Member participant = memberRepository.findByEmail(authentication.getName()) // 인증 유저 조회
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
         // 내 매칭 요청 목록 조회
-        List<MatchingRequest> matchingRequests = matchingRequestRepository.findByParticipant(participant);
+        Page<MatchingRequest> matchingRequestsPage = matchingRequestRepository.findByParticipant(participant, pageable);
+        List<MatchingRequest> matchingRequests = matchingRequestsPage.getContent();
         List<FindMyMatchingReqData> matchingReqDatas = matchingRequests.stream()
                 .map(FindMyMatchingReqData::toFindMatchingReqData)
                 .toList();
-        return new FindMyMatchingReqsResponse(matchingReqDatas.size(), matchingReqDatas);
+        return new FindMyMatchingReqsResponse(matchingReqDatas.size(),
+                matchingRequestsPage.getNumber(),
+                matchingRequestsPage.getTotalPages(),
+                matchingReqDatas);
     }
 
-    public FindComeMatchingReqsResponse findComeMatchingRequest(Authentication authentication){
+    public FindComeMatchingReqsResponse findComeMatchingRequest(Authentication authentication, Pageable pageable){
         Member author = memberRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG)); // 인증 유저 조회
-        List<MatchingRequest> matchingRequests = matchingRequestQueryRepository.findComeMatchingRequests(author);
+        Page<MatchingRequest> matchingRequestsPage = matchingRequestQueryRepository.findComeMatchingRequests(author, pageable);
+        List<MatchingRequest> matchingRequests = matchingRequestsPage.getContent();
         List<FindComeMatchingReqData> matchingReqDatas = matchingRequests.stream()
                 .map(FindComeMatchingReqData::toFindComeMatchingReqData)
                 .toList();
-        return new FindComeMatchingReqsResponse(matchingReqDatas.size(), matchingReqDatas);
+        return new FindComeMatchingReqsResponse(matchingReqDatas.size(),
+                matchingRequestsPage.getNumber(),
+                matchingRequestsPage.getTotalPages(),
+                matchingReqDatas);
     }
 
     @Transactional
@@ -119,6 +130,7 @@ public class MatchingRequestService {
         RoommateAlarm roommateAlarm = RoommateAlarm.builder()
                 .matchingPost(findMatchingPost)
                 .member(findMatchingPost.getAuthor())
+                .matchingRequest(newMatchingRequest)
                 .alarmType(RoommateAlarmType.MATCHING_REQUEST)
                 .build();
         roommateAlarmRepository.save(roommateAlarm);
@@ -158,6 +170,7 @@ public class MatchingRequestService {
         RoommateAlarm acceptRoommateAlarm = RoommateAlarm.builder()
                 .member(matchingRequest.getParticipant())
                 .matchingPost(matchingPost)
+                .matchingRequest(matchingRequest)
                 .alarmType(RoommateAlarmType.MATCHING_REQUEST_ACCEPT)
                 .build();
         roommateAlarmRepository.save(acceptRoommateAlarm);
@@ -189,8 +202,11 @@ public class MatchingRequestService {
                     .message(participantProfile.getName() + CHATROOM_ENTER_MESSAGE)
                     .messageStatus(MessageStatus.ENTER)
                     .date(LocalDateTime.now()).build();
-            messageRepository.save(authMemberEnterMessage);
-            messageRepository.save(participantEnterMessage);
+            List<Message> enterMessages = new ArrayList<>();
+            enterMessages.add(authMemberEnterMessage);
+            enterMessages.add(participantEnterMessage);
+            Queue<Message> q = new LinkedList<>(enterMessages);
+            redisRepository.put(newChatRoom.getRoomId(), q);
         } // create chatroom & chatroomMember for owner
         else{
             createChatRoomMember(matchingRequest.getParticipant(), findChatRoom.get());
@@ -201,7 +217,23 @@ public class MatchingRequestService {
                     .message(participantProfile.getName() + CHATROOM_ENTER_MESSAGE)
                     .messageStatus(MessageStatus.ENTER)
                     .date(LocalDateTime.now()).build();
-            messageRepository.save(participantEnterMessage);
+            // check in redis cache
+            if(!redisRepository.containsKey(findChatRoom.get().getRoomId())){
+                Queue<Message> q = new LinkedList<>();
+                q.add(participantEnterMessage);
+                redisRepository.put(findChatRoom.get().getRoomId(), q);
+            }else{
+                Queue<Message> q = redisRepository.get(findChatRoom.get().getRoomId());
+                q.add(participantEnterMessage);
+                if(q.size() >= MAX_CACHE_SIZE_EACH_ROOM){
+                    Queue<Message> tmpQ = new LinkedList<>();
+                    for(int i = 0;i < MAX_CACHE_SIZE_EACH_ROOM;i++){
+                        tmpQ.add(q.poll());
+                    }
+                    commitMessageCache(tmpQ);
+                }
+                redisRepository.put(findChatRoom.get().getRoomId(), q);
+            }
         }
         return new AcceptMatchingReqResponse(matchingRequestId);
     }
@@ -220,6 +252,7 @@ public class MatchingRequestService {
         RoommateAlarm roommateAlarm = RoommateAlarm.builder()
                 .member(matchingRequest.getParticipant())
                 .matchingPost(matchingPost)
+                .matchingRequest(matchingRequest)
                 .alarmType(RoommateAlarmType.MATCHING_REQUEST_REJECT)
                 .build();
         roommateAlarmRepository.save(roommateAlarm);
@@ -324,5 +357,12 @@ public class MatchingRequestService {
             return slicedTitle + "..." + CHAT_ROOM_NAME_POSTFIX;
         }
         return matchingPostTitle + CHAT_ROOM_NAME_POSTFIX;
+    }
+
+    private void commitMessageCache(Queue<Message> messageQueue){
+        for(int i = 0;i < MAX_CACHE_SIZE_EACH_ROOM;i++){
+            Message message = messageQueue.poll();
+            messageRepository.save(message);
+        }
     }
 }
