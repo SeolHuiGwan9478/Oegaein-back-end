@@ -69,6 +69,7 @@ public class MatchingPost {
         deadline = dto.getDeadline();
         dongType = dto.getDongType();
         roomSizeType = dto.getRoomSizeType();
+        targetNumberOfPeople = dto.getTargetNumberOfPeople();
     }
 
     public void completeMatchingPost(){

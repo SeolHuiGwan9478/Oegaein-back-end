@@ -42,6 +42,7 @@ public class MatchingRequestQueryRepository {
                 " where mrmpa.id = :authorId" +
                 " and mr.matchingAcceptance = :mrstatus";
         Long total = em.createQuery(countJpql, Long.class)
+                .setParameter("authorId", authorId)
                 .setParameter("mrstatus", MatchingAcceptance.WAITING)
                 .getSingleResult();
         return new PageImpl<>(matchingRequests, pageable, total);

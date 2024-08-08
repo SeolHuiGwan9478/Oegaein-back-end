@@ -1,16 +1,11 @@
 package com.likelion.oegaein.domain.matching.util;
 
-import com.likelion.oegaein.domain.matching.entity.MatchingPost;
-import com.likelion.oegaein.domain.matching.repository.MatchingPostRepository;
 import com.likelion.oegaein.domain.matching.repository.query.MatchingPostQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

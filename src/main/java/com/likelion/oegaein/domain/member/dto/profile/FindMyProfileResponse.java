@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FindMyProfileResponse implements ResponseDto {
-    private Long memberId;
+    private Long id;
     private String photoUrl; // 프로필 사진 url
     private String name; // 닉네임
     private String introduction; // 소개글
@@ -47,7 +47,7 @@ public class FindMyProfileResponse implements ResponseDto {
                 .collect(Collectors.toList());
 
         return FindMyProfileResponse.builder()
-                .memberId(profile.getMember().getId())
+                .id(profile.getMember().getId())
                 .photoUrl(profile.getMember().getPhotoUrl())
                 .name(profile.getName())
                 .introduction(profile.getIntroduction())

@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FindMatchingPostResInProfile {
+    private Long id;
     private String photoUrl;
     private Gender gender; // 성별
     private int studentNo; // 학번
@@ -31,6 +32,7 @@ public class FindMatchingPostResInProfile {
         List<SleepingHabitEntity> sleepingHabitEntities = profile.getSleepingHabit();
         List<SleepingHabit> sleepingHabits = sleepingHabitEntities.stream().map(SleepingHabitEntity::getSleepingHabit).toList();
         return FindMatchingPostResInProfile.builder()
+                .id(profile.getMember().getId())
                 .photoUrl(profile.getMember().getPhotoUrl())
                 .gender(profile.getGender())
                 .studentNo(profile.getStudentNo())

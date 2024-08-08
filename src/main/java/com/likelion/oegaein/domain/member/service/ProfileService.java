@@ -7,7 +7,9 @@ import com.likelion.oegaein.domain.member.entity.member.Member;
 import com.likelion.oegaein.domain.member.entity.profile.Profile;
 import com.likelion.oegaein.domain.member.entity.profile.SleepingHabit;
 import com.likelion.oegaein.domain.member.entity.profile.SleepingHabitEntity;
+import com.likelion.oegaein.domain.member.exception.MemberException;
 import com.likelion.oegaein.domain.member.repository.*;
+import com.likelion.oegaein.domain.member.validation.BlockValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +30,14 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final MemberRepository memberRepository;
     private final SleepingHabitRepository sleepingHabitRepository;
-    private final BlockRepository blockRepository;
     private final ReviewRepository reviewRepository;
     private final LikeRepository likeRepository;
+    private final BlockValidator blockValidator;
 
-    public CreateProfileResponse createProfile(String email, CreateProfileRequest form) {
-        Member loginMember = findAuthenticatedMember(email);
-        
-        // 닉네임 중복 확인
-        isValidName(form.getName());
-        
-        // 내용 저장
+    public CreateProfileResponse createProfile(Authentication authentication, CreateProfileRequest form) {
+        Member loginMember = memberRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
+        isAlreadyRegisterProfile(loginMember);
         Profile profile = Profile.builder()
                 .name(form.getName())
                 .introduction(form.getIntroduction())
@@ -51,24 +50,18 @@ public class ProfileService {
                 .smoking(form.getSmoking())
                 .cleaningCycle(form.getCleaningCycle())
                 .outing(form.getOuting())
+                .member(loginMember)
                 .soundSensitivity(form.getSoundSensitivity())
                 .build();
-        profile.setMember(loginMember);
         profileRepository.save(profile);
         loginMember.updateProfileSetUpStatus();
-        // 수면습관 설정
         updateSleepingHabit(form.getSleepingHabit(), profile);
-
         return new CreateProfileResponse(profile.getId());
     }
 
     public UpdateProfileResponse updateProfile(String email, UpdateProfileRequest form) {
         Member loginMember = findAuthenticatedMember(email);// 사용자 찾기
-        if (!loginMember.getProfile().getName().equals(form.getName())) {
-            isValidName(form.getName());
-        }
-        Profile profile = profileRepository.findById(loginMember.getProfile().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Not Found Profile: " + loginMember.getId()));
+        Profile profile = loginMember.getProfile();
         profile.set(form);
         updateSleepingHabit(form.getSleepingHabit(), profile);
         return new UpdateProfileResponse(profile.getId());
@@ -99,9 +92,8 @@ public class ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MEMBER_ERR_MSG));
+        blockValidator.validateBlockedMember(memberId, loginMember.getId());
         Boolean isLike = Boolean.FALSE;
-        // 차단 확인
-        isBlockedMember(loginMember, findMember);
         Profile profile = findMember.getProfile();
         Optional<Likey> likey = likeRepository.findBySenderAndReceiver(loginMember, findMember);
         if(likey.isPresent()) isLike = Boolean.TRUE;
@@ -115,6 +107,19 @@ public class ProfileService {
     }
 
     // 유효 닉네임 검사
+    private void isAlreadyRegisterProfile(Member member) {
+        Optional<Profile> profile = profileRepository.findByMember(member);
+        if(profile.isPresent()) throw new MemberException("이미 등록된 프로필이 존재합니다.");
+    }
+
+    // 리뷰 평점 계산
+    public void setAverageScore(Member member) {
+        Profile profile = member.getProfile();
+        double averageScore = reviewRepository.averageScoreByReceiver(member);
+        profile.setScore(averageScore);
+    }
+
+    // 유효 닉네임 검사
     public CheckDuplicateNameResponse isValidName(String nickname) {
         Optional<Profile> member = profileRepository.findByName(nickname);
         if (member.isPresent()) {
@@ -123,20 +128,6 @@ public class ProfileService {
         else {
             return new CheckDuplicateNameResponse(false);
         }
-    }
-
-    // 차단 확인
-    public void isBlockedMember(Member loginMember, Member findMember) {
-        if (blockRepository.isBlocked(loginMember.getId(), findMember.getId())) {
-            throw new IllegalStateException("차단된 사용자입니다.");
-        }
-    }
-
-    // 리뷰 평점 계산
-    public void setAverageScore(Member member) {
-        Profile profile = member.getProfile();
-        double averageScore = reviewRepository.averageScoreByReceiver(member);
-        profile.setScore(averageScore);
     }
 
     // 로그인한 사용자 찾기

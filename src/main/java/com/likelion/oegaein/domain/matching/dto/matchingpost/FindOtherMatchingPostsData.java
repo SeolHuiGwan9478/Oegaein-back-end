@@ -20,7 +20,7 @@ public class FindOtherMatchingPostsData {
     private Major major; // major
     private int studentNo; // studentNo
     private String name; // name
-    private int targetOfNumber; // targetOfNumber
+    private int targetNumberOfPeople; // targetOfNumber
     private String photoUrl; // photoUrl
     private Long matchingPostId; // matchingPost ID
     private String title; // Title
@@ -36,7 +36,7 @@ public class FindOtherMatchingPostsData {
                 .major(profile.getMajor())
                 .studentNo(profile.getStudentNo())
                 .name(profile.getName())
-                .targetOfNumber(matchingPost.getTargetNumberOfPeople())
+                .targetNumberOfPeople(matchingPost.getTargetNumberOfPeople())
                 .photoUrl(matchingPost.getAuthor().getPhotoUrl())
                 .matchingPostId(matchingPost.getId())
                 .title(matchingPost.getTitle())

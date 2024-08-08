@@ -156,6 +156,7 @@ public class MatchingPostQueryRepository {
         // Create count query to get the total number of results
         String countJpql = "select count(mp) from MatchingPost mp" +
                 " join mp.author mpa" +
+                " join mpa.profile mpap" +
                 " where mpap.score >= :standardRate" +
                 " and mpa.id not in :blockedMemberIds";
         Long total = em.createQuery(countJpql, Long.class)

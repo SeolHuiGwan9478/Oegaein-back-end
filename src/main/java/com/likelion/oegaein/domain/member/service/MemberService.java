@@ -1,6 +1,9 @@
 package com.likelion.oegaein.domain.member.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.likelion.oegaein.domain.chat.entity.ChatRoomMember;
+import com.likelion.oegaein.domain.chat.repository.ChatRoomMemberRepository;
+import com.likelion.oegaein.domain.chat.repository.query.ChatRoomMemberQueryRepository;
 import com.likelion.oegaein.domain.member.dto.member.*;
 import com.likelion.oegaein.domain.member.dto.oauth.GoogleOauthLoginResponse;
 import com.likelion.oegaein.domain.member.dto.oauth.GoogleOauthToken;
@@ -46,6 +49,7 @@ public class MemberService {
     private final GoogleOauthUtil googleOauthUtil;
     private final MemberValidator memberValidator;
     private final RefreshTokenValidator refreshTokenValidator;
+    private final ChatRoomMemberQueryRepository chatRoomMemberQueryRepository;
     private final BlockRepository blockRepository;
     private final LikeRepository likeRepository;
     private final LikeValidator likeValidator;
@@ -63,6 +67,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(userInfo.getEmail()).orElseGet(() -> {
             Member newMember = Member.builder()
                     .email(userInfo.getEmail())
+                    .photoUrl(userInfo.getPicture())
                     .profileSetUpStatus(false)
                     .build();
             memberRepository.save(newMember);
