@@ -20,7 +20,7 @@ java -jar oegaein-0.0.1-SNAPSHOT.jar
 
 # 2. OverView
 ## 시연 영상
-https://github.com/user-attachments/assets/dda0e894-bec8-4b91-9bfd-a868d4784a23
+https://github.com/user-attachments/assets/19cb0c8f-60e6-4e57-be81-0a23a51342a2
 
 ## 2.1. Project Preview
 <p align='center'><img width="699" alt="image" src="https://github.com/SeolHuiGwan9478/Oegaein-back-end/assets/67581495/7080698d-7b33-4b3f-8662-c6d8dd4918a8"></p>
