@@ -58,6 +58,12 @@ https://github.com/user-attachments/assets/19cb0c8f-60e6-4e57-be81-0a23a51342a2
 |<img width="260" alt="image" src="https://github.com/SeolHuiGwan9478/Oegaein-back-end/assets/67581495/4bb0540a-5ea0-4d37-b22f-16f18d600391">|<img width="260" alt="image" src="https://github.com/SeolHuiGwan9478/Oegaein-back-end/assets/67581495/f4491f01-12d2-4a58-a14d-eeb29e413c88">|<img width="260" alt="image" src="https://github.com/SeolHuiGwan9478/Oegaein-back-end/assets/67581495/055d929c-9ea0-4e12-ba12-47a0575fd83a">|
 |특정 매칭글 조회|댓글 작성|나에게 온 매칭 신청 목록 조회|
 
+## 에브리타임즈를 이용한 홍보
+|Picture 1|Picture 2|
+|---|---|
+|<img width=350 src='https://github.com/user-attachments/assets/9d5fd8ab-546e-4d0e-810c-360aab52c138'/>|<img width=350 src='https://github.com/user-attachments/assets/dbaddd40-5053-43fb-afb8-4bd38294771e'/>|
+|에브리타임즈 홍보|사용자 반응|
+
 # 4. Tech stack
 
 ### Backend
