@@ -29,9 +29,9 @@ https://github.com/user-attachments/assets/19cb0c8f-60e6-4e57-be81-0a23a51342a2
 <p align='center'><img width="723" alt="image" src="https://github.com/SeolHuiGwan9478/Oegaein-back-end/assets/67581495/e04d0377-9b7f-4ed2-ac17-6a4b0c05ca6e"></p>
 
 ## 2.3. Card News
-![001](https://github.com/user-attachments/assets/fd51e501-b137-46b5-ba6d-e0ecd1f410f3)
-![002](https://github.com/user-attachments/assets/f84c47a2-9f41-4075-a105-c5ae31858705)
-![003](https://github.com/user-attachments/assets/339641a0-4a1a-41a5-b76d-7b0a3eced739)
+<p align='center'><img width="699" alt="image" src="https://github.com/user-attachments/assets/fd51e501-b137-46b5-ba6d-e0ecd1f410f3"></p>
+<p align='center'><img width="699" alt="image" src="https://github.com/user-attachments/assets/f84c47a2-9f41-4075-a105-c5ae31858705"></p>
+<p align='center'><img width="699" alt="image" src="https://github.com/user-attachments/assets/339641a0-4a1a-41a5-b76d-7b0a3eced739"></p>
 
 # 3. Service Detail
 ## ℹ️ 프로필 설정 시 다양한 정보를 설정할 수 있습니다.(*수면 습관, MBTI, 청소 주기 등)
